@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
 
-namespace ZDL.Models
+namespace Models
 {
     public class AppDbContext : IDisposable
     {

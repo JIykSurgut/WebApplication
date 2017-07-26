@@ -132,6 +132,11 @@
     <Compile Include="Models\DataBase\AppDbContext.cs" />
     <Compile Include="Models\Identity\Role\AppRole.cs" />
     <Compile Include="Models\Identity\Role\RoleStore.cs" />
+    <Compile Include="Models\Identity\User\AppUser.cs" />
+    <Compile Include="Models\Identity\User\UserStore.cs" />
+    <Compile Include="Models\Manager\AppRoleManager.cs" />
+    <Compile Include="Models\Manager\AppSignInManage.cs" />
+    <Compile Include="Models\Manager\AppUserManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
