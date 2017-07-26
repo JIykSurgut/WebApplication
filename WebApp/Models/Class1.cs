@@ -7,6 +7,6 @@ namespace WebApp.Models
 {
     public class Class1
     {
-      //12345
+     //Что это было
     }
 }
