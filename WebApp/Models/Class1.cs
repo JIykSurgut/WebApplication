@@ -7,6 +7,5 @@ namespace WebApp.Models
 {
     public class Class1
     {
-     //44444444
     }
 }
