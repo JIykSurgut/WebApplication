@@ -129,6 +129,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataBase\AppDbContext.cs" />
     <Compile Include="Models\Identity\Role\AppRole.cs" />
     <Compile Include="Models\Identity\Role\RoleStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
