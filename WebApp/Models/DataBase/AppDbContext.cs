@@ -128,6 +128,28 @@ namespace Models
         }
 
         //методы
-       
+        //IUserStore
+        public SqlParameter[] UserInsert(AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+        public SqlParameter[] UserDeleteById(int userId)
+        {
+            throw new NotImplementedException();
+        }
+        public SqlParameter[] UserFindById(int userId)
+        {
+            throw new NotImplementedException();
+        }
+        public SqlParameter[] UserFindByName(string userName)
+        {
+            throw new NotImplementedException();
+        }
+        public SqlParameter[] UserUpdateById(AppUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

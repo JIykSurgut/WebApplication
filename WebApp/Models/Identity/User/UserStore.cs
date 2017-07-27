@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Web;
+
 
 namespace Models
 {
@@ -56,8 +53,8 @@ namespace Models
         }
         public Task<AppUser> FindByIdAsync(int userId)
         {
-            OracleParameter[] parameters = dbContext.UserFindById(userId);
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
+            SqlParameter[] parameters = dbContext.UserFindById(userId);
+            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
             reader.Read();
 
             AppUser user = null;
@@ -79,8 +76,8 @@ namespace Models
         }
         public Task<AppUser> FindByNameAsync(string userName)
         {
-            OracleParameter[] parameters = dbContext.UserFindByName(userName);
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
+            SqlParameter[] parameters = dbContext.UserFindByName(userName);
+            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
             reader.Read();
 
             AppUser user = null;
@@ -120,8 +117,8 @@ namespace Models
         }
         public Task<IList<string>> GetRolesAsync(AppUser user)
         {
-            OracleParameter[] parameters = dbContext.RolesGetByUserId(user.Id);
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
+            SqlParameter[] parameters = dbContext.RolesGetByUserId(user.Id);
+            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
 
             IList<string> roleNames = new List<string>();
             while (reader.Read())
@@ -132,7 +129,7 @@ namespace Models
         }
         public Task<bool> IsInRoleAsync(AppUser user, string roleName)
         {
-            OracleParameter[] parameters = dbContext.IsRoleInUserd(user.Id, roleName);
+            SqlParameter[] parameters = dbContext.IsRoleInUserd(user.Id, roleName);
             int result = int.Parse(parameters[2].Value.ToString());
             if (result != 0)
             {
@@ -234,8 +231,8 @@ namespace Models
 
         public Task<List<AppUser>> UsersGetAllAsync()
         {
-            OracleParameter[] parameters = dbContext.UsersGetAll();
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[0].Value).GetDataReader();
+            SqlParameter[] parameters = dbContext.UsersGetAll();
+            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[0].Value).GetDataReader();
 
             List<AppUser> users = new List<AppUser>();
             while (reader.Read())
