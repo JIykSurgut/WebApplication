@@ -1,0 +1,69 @@
+﻿@model ZDL.Models.AppUser
+
+@{
+    ViewBag.Title = "Редактирование данных пользователя";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <br />
+        <h3>Редактирование данных пользователя</h3>
+        <hr />
+        @Html.ValidationSummary(true)
+        <div class="form-group">
+            @Html.Label("Логин:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+            </div>
+        </div>
+        @*<div class="form-group">
+                @Html.Label("Пароль:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.PasswordHash, new { @class = "form-control" })
+                </div>
+            </div>*@
+        <br />
+        <div class="form-group">
+            @Html.Label("Фамилия:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.SurName, new { @class = "form-control" })
+            </div>
+        </div>
+        @*<div class="form-group">
+                @Html.Label("Имя:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Отчество:", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+            </div>*@
+        <br />
+        <div class="form-group">
+            @Html.Label("Роли:", new { @class = "control-label col-md-2" })
+            <span class=" col-md-10">
+
+                @foreach (var role in (List<SelectListItem>)ViewBag.Roles)
+                {
+                    <input type="checkbox" name="selectedRole" value="@role.Text" checked="@role.Selected" class="checkbox-inline" />
+                    @Html.Label(role.Text, new { @class = "control-label" })
+                }
+            </span>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Сохранить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Вернуться", "Index")
+</div>
