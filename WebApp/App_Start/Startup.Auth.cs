@@ -4,7 +4,7 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using Models;
 
-namespace ZDL
+namespace WebApp
 {
     public partial class Startup
     {
