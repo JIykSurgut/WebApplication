@@ -143,12 +143,13 @@ namespace Models
         }
         public SqlParameter[] UserFindByName(string userName)
         {
-            string commandText = "Identity.UserFindByName";
+            string commandText = "dbo.UserFindByName";
             SqlParameter[] parameters = new SqlParameter[]
             {
-             new SqlParameter("userName", SqlDbType.NVarChar),
-             new SqlParameter("id", SqlDbType.Int)
-            };
+                new SqlParameter("userName", SqlDbType.NVarChar, 50) {SqlValue = userName, Direction = ParameterDirection.Input},
+                new SqlParameter("id",SqlDbType.Int) {Direction = ParameterDirection.Output},
+                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output}
+            };       
             return StoredProcedure(commandText, parameters);
         }
         public SqlParameter[] UserUpdateById(AppUser user)
