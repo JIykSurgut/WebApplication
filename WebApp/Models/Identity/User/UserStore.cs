@@ -43,64 +43,23 @@ namespace Models
         //Task UpdateAsync(TUser user)                 обновить данные пользователя
         public Task CreateAsync(AppUser user)
         {
-            dbContext.UserInsert(user);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task DeleteAsync(AppUser user)
         {
-            dbContext.UserDeleteById(user.Id);
-            return Task.FromResult<Object>(null);
+            throw new NotImplementedException();
         }
         public Task<AppUser> FindByIdAsync(int userId)
         {
-            SqlParameter[] parameters = dbContext.UserFindById(userId);
-            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
-            reader.Read();
-
-            AppUser user = null;
-            if (reader.HasRows)
-            {
-                user = new AppUser();
-                user.Id = Convert.ToInt32(reader["Id"]);
-                user.UserName = Convert.ToString(reader["UserName"]);
-                user.PasswordHash = Convert.ToString(reader["PasswordHash"]);
-                user.SurName = Convert.ToString(reader["SurName"]);
-                user.FirstName = Convert.ToString(reader["FirstName"]);
-                user.Patronymic = Convert.ToString(reader["Patronymic"]);
-                user.LockoutEnabled = (Convert.ToByte(reader["LockoutEnabled"]) == 0) ? false : true;
-                user.AccessFailedCount = Convert.ToInt32(reader["AccessFailedCount"]);
-                user.LockoutEndDateUtc = Convert.ToDateTime(reader["LockoutEndDateUTC"]);
-                user.TwoFactorEnabled = (Convert.ToByte(reader["TwoFactorEnabled"]) == 0) ? false : true;
-            }
-            return Task.FromResult<AppUser>(user);
+            throw new NotImplementedException();
         }
         public Task<AppUser> FindByNameAsync(string userName)
         {
-            SqlParameter[] parameters = dbContext.UserFindByName(userName);
-            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
-            reader.Read();
-
-            AppUser user = null;
-            if (reader.HasRows)
-            {
-                user = new AppUser();
-                user.Id = Convert.ToInt32(reader["Id"]);
-                user.UserName = Convert.ToString(reader["UserName"]);
-                user.PasswordHash = Convert.ToString(reader["PasswordHash"]);
-                user.SurName = Convert.ToString(reader["SurName"]);
-                user.FirstName = Convert.ToString(reader["FirstName"]);
-                user.Patronymic = Convert.ToString(reader["Patronymic"]);
-                user.LockoutEnabled = (Convert.ToByte(reader["LockoutEnabled"]) == 0) ? false : true;
-                user.AccessFailedCount = Convert.ToInt32(reader["AccessFailedCount"]);
-                user.LockoutEndDateUtc = Convert.ToDateTime(reader["LockoutEndDateUTC"]);
-                user.TwoFactorEnabled = (Convert.ToByte(reader["TwoFactorEnabled"]) == 0) ? false : true;
-            }
-            return Task.FromResult<AppUser>(user);
+            throw new NotImplementedException();
         }
         public Task UpdateAsync(AppUser user)
         {
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<Object>(null);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -112,35 +71,19 @@ namespace Models
         //Task RemoveFromRoleAsync(TUser user, string roleName) удалить роль у данного пользователя
         public Task AddToRoleAsync(AppUser user, string roleName)
         {
-            dbContext.UserRoleInsert(user.Id, roleName);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task<IList<string>> GetRolesAsync(AppUser user)
         {
-            SqlParameter[] parameters = dbContext.RolesGetByUserId(user.Id);
-            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
-
-            IList<string> roleNames = new List<string>();
-            while (reader.Read())
-            {
-                roleNames.Add(Convert.ToString(reader["Name"]));
-            }
-            return Task.FromResult<IList<string>>(roleNames);
+            throw new NotImplementedException();
         }
         public Task<bool> IsInRoleAsync(AppUser user, string roleName)
         {
-            SqlParameter[] parameters = dbContext.IsRoleInUserd(user.Id, roleName);
-            int result = int.Parse(parameters[2].Value.ToString());
-            if (result != 0)
-            {
-                return Task.FromResult<bool>(true);
-            }
-            return Task.FromResult<bool>(false);
+            throw new NotImplementedException();
         }
         public Task RemoveFromRoleAsync(AppUser user, string roleName)
         {
-            dbContext.RoleDeleteInUser(user.Id, roleName);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -151,19 +94,15 @@ namespace Models
         //Task SetPasswordHashAsync(TUser user, string passwordHash) записать хеш-пароль пользователю
         public Task<string> GetPasswordHashAsync(AppUser user)
         {
-            return Task.FromResult<string>(user.PasswordHash);
+            throw new NotImplementedException();
         }
         public Task<bool> HasPasswordAsync(AppUser user)
         {
-            bool result = false;
-            if (user.PasswordHash != null) result = true;
-
-            return Task.FromResult<bool>(result);
+            throw new NotImplementedException();
         }
         public Task SetPasswordHashAsync(AppUser user, string passwordHash)
         {
-            user.PasswordHash = passwordHash;
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -178,38 +117,31 @@ namespace Models
         //Task SetLockoutEndDateAsync(TUser user,DateTimeOffset lockoutEnd) задает дату окончания блокировки
         public Task<int> GetAccessFailedCountAsync(AppUser user)
         {
-            return Task.FromResult(user.AccessFailedCount);
+            throw new NotImplementedException();
         }
         public Task<bool> GetLockoutEnabledAsync(AppUser user)
         {
-            return Task.FromResult(user.LockoutEnabled);
+            throw new NotImplementedException();
         }
         public Task<DateTimeOffset> GetLockoutEndDateAsync(AppUser user)
         {
-            DateTimeOffset dateTimeOffset = DateTime.SpecifyKind(user.LockoutEndDateUtc, DateTimeKind.Utc);
-            return Task.FromResult(dateTimeOffset);
+            throw new NotImplementedException();
         }
         public Task<int> IncrementAccessFailedCountAsync(AppUser user)
         {
-            return Task.FromResult(++user.AccessFailedCount);
+            throw new NotImplementedException();
         }
         public Task ResetAccessFailedCountAsync(AppUser user)
         {
-            user.AccessFailedCount = 0;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task SetLockoutEnabledAsync(AppUser user, bool enabled)
         {
-            user.LockoutEnabled = enabled;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset lockoutEnd)
         {
-            user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         #endregion
 
@@ -219,38 +151,17 @@ namespace Models
         //Task SetTwoFactorEnabledAsync(TUser user, bool enabled) устанавливает двойную аутентификацию 
         public Task SetTwoFactorEnabledAsync(AppUser user, bool enabled)
         {
-            user.TwoFactorEnabled = enabled;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task<bool> GetTwoFactorEnabledAsync(AppUser user)
         {
-            return Task.FromResult(user.TwoFactorEnabled);
+            throw new NotImplementedException();
         }
         #endregion
 
         public Task<List<AppUser>> UsersGetAllAsync()
         {
-            SqlParameter[] parameters = dbContext.UsersGetAll();
-            SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[0].Value).GetDataReader();
-
-            List<AppUser> users = new List<AppUser>();
-            while (reader.Read())
-            {
-                AppUser user = new AppUser();
-                user.Id = Convert.ToInt32(reader["Id"]);
-                user.UserName = Convert.ToString(reader["UserName"]);
-                user.PasswordHash = Convert.ToString(reader["PasswordHash"]);
-                user.SurName = Convert.ToString(reader["SurName"]);
-                user.FirstName = Convert.ToString(reader["FirstName"]);
-                user.Patronymic = Convert.ToString(reader["Patronymic"]);
-                user.LockoutEnabled = (Convert.ToByte(reader["LockoutEnabled"]) == 0) ? false : true;
-                user.AccessFailedCount = Convert.ToInt32(reader["AccessFailedCount"]);
-                user.LockoutEndDateUtc = Convert.ToDateTime(reader["LockoutEndDateUTC"]);
-                user.TwoFactorEnabled = (Convert.ToByte(reader["TwoFactorEnabled"]) == 0) ? false : true;
-                users.Add(user);
-            }
-            return Task.FromResult<List<AppUser>>(users);
+            throw new NotImplementedException();
         }
     }
 }

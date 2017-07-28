@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Models;
-
+using Microsoft.Owin.Security;
 
 namespace Controllers
 {

@@ -20,7 +20,7 @@ namespace Models
         {
             this.dbContext = dbContext;
         }
-
+              
         #region IRoleStore
         //
         // Task CreateAsync(TRole role)                  добавить новую роль
@@ -31,13 +31,11 @@ namespace Models
         // Task UpdateAsync(TRole role)                  обновить роль
         public Task CreateAsync(AppRole role)
         {
-            dbContext.RoleInsert(role);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public Task DeleteAsync(AppRole role)
         {
-            dbContext.RoleDeleteById(role.Id);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         public void Dispose()
         {
@@ -49,55 +47,21 @@ namespace Models
         }
         public Task<AppRole> FindByIdAsync(int roleId)
         {
-            OracleParameter[] parameters = dbContext.RoleFindById(roleId);
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
-            reader.Read();
-
-            AppRole role = null;
-            if (reader.HasRows)
-            {
-                role = new AppRole();
-                role.Id = Convert.ToInt32(reader["Id"]);
-                role.Name = Convert.ToString(reader["Name"]);
-            }
-            return Task.FromResult<AppRole>(role);
+            throw new NotImplementedException();
         }
         public Task<AppRole> FindByNameAsync(string roleName)
         {
-            OracleParameter[] parameters = dbContext.RoleFindByName(roleName);
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
-            reader.Read();
-
-            AppRole role = null;
-            if (reader.HasRows)
-            {
-                role = new AppRole();
-                role.Id = Convert.ToInt32(reader["Id"]);
-                role.Name = Convert.ToString(reader["Name"]);
-            }
-            return Task.FromResult<AppRole>(role);
+            throw new NotImplementedException();
         }
         public Task UpdateAsync(AppRole role)
         {
-            dbContext.RoleUpdateById(role);
-            return Task.FromResult<object>(null);
+            throw new NotImplementedException();
         }
         #endregion
 
         public Task<List<AppRole>> RolesGetAll()
         {
-            OracleParameter[] parameters = dbContext.RolesGetAll();
-            OracleDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[0].Value).GetDataReader();
-
-            List<AppRole> roles = new List<AppRole>();
-            while (reader.Read())
-            {
-                AppRole role = new AppRole();
-                role.Id = Convert.ToInt32(reader["Id"]);
-                role.Name = Convert.ToString(reader["Name"]);
-                roles.Add(role);
-            }
-            return Task.FromResult<List<AppRole>>(roles);
+            throw new NotImplementedException();
         }
     }
 }
