@@ -143,7 +143,13 @@ namespace Models
         }
         public SqlParameter[] UserFindByName(string userName)
         {
-            throw new NotImplementedException();
+            string commandText = "Identity.UserFindByName";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+             new SqlParameter("userName", SqlDbType.NVarChar),
+             new SqlParameter("id", SqlDbType.Int)
+            };
+            return StoredProcedure(commandText, parameters);
         }
         public SqlParameter[] UserUpdateById(AppUser user)
         {

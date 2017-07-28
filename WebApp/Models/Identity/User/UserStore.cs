@@ -55,6 +55,26 @@ namespace Models
         }
         public Task<AppUser> FindByNameAsync(string userName)
         {
+            SqlParameter[] parameters = dbContext.UserFindByName(userName);
+            //SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
+            //reader.Read();
+
+            //AppUser user = null;
+            //if (reader.HasRows)
+            //{
+            //    user = new AppUser();
+            //    user.Id = Convert.ToInt32(reader["Id"]);
+            //    user.UserName = Convert.ToString(reader["UserName"]);
+            //    user.PasswordHash = Convert.ToString(reader["PasswordHash"]);
+            //    user.SurName = Convert.ToString(reader["SurName"]);
+            //    user.FirstName = Convert.ToString(reader["FirstName"]);
+            //    user.Patronymic = Convert.ToString(reader["Patronymic"]);
+            //    user.LockoutEnabled = (Convert.ToByte(reader["LockoutEnabled"]) == 0) ? false : true;
+            //    user.AccessFailedCount = Convert.ToInt32(reader["AccessFailedCount"]);
+            //    user.LockoutEndDateUtc = Convert.ToDateTime(reader["LockoutEndDateUTC"]);
+            //    user.TwoFactorEnabled = (Convert.ToByte(reader["TwoFactorEnabled"]) == 0) ? false : true;
+            //}
+            //return Task.FromResult<AppUser>(user);
             throw new NotImplementedException();
         }
         public Task UpdateAsync(AppUser user)
