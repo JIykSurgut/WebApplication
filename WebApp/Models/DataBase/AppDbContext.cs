@@ -148,7 +148,7 @@ namespace Models
             {
                 new SqlParameter("userName", SqlDbType.NVarChar, 50) {SqlValue = userName, Direction = ParameterDirection.Input},
                 new SqlParameter("id",SqlDbType.Int) {Direction = ParameterDirection.Output},
-                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output}
+                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output}
             };       
             return StoredProcedure(commandText, parameters);
         }
