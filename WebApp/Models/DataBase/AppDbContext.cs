@@ -169,7 +169,7 @@ namespace Models
             {
                 new SqlParameter("id",SqlDbType.Int) {SqlValue = user.Id, Direction = ParameterDirection.Input},
                 new SqlParameter("email",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input },
-                new SqlParameter("emailConfirmed",SqlDbType.Bit) {Sqlvalue = user.em Direction = ParameterDirection.Input },
+                new SqlParameter("emailConfirmed",SqlDbType.Bit) { Direction = ParameterDirection.Input },
                 new SqlParameter("passwordHash",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input},
                 new SqlParameter("securityStamp",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input},
                 new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input},
@@ -179,7 +179,7 @@ namespace Models
                 new SqlParameter("lockoutEnabled",SqlDbType.Bit) {Direction = ParameterDirection.Input },
                 new SqlParameter("accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Input},
                 new SqlParameter("userName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input}
-            }
+            };
             throw new NotImplementedException();
         }
 
