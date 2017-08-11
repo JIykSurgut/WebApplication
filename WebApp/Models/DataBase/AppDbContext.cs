@@ -131,36 +131,78 @@ namespace Models
         //IUserStore
         public SqlParameter[] UserInsert(AppUser user)
         {
-            throw new NotImplementedException();
+            string commandText = "dbo.UserInsert";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("id",SqlDbType.Int) {SqlValue = user.Id, Direction = ParameterDirection.Input},
+                new SqlParameter("email",SqlDbType.NVarChar, 50) {SqlValue = user.Email, Direction = ParameterDirection.Input},
+                new SqlParameter("emailConfirmed",SqlDbType.Bit) {SqlValue = user.EmailConfirmed, Direction = ParameterDirection.Input},
+                new SqlParameter("passwordHash", SqlDbType.NVarChar,50) {SqlValue = user.PasswordHash, Direction = ParameterDirection.Input},
+                new SqlParameter("securityStamp", SqlDbType.NVarChar,50) {SqlValue = user.SecurityStamp, Direction = ParameterDirection.Input},
+                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) {SqlValue = user.PhoneNumber, Direction = ParameterDirection.Input},
+                new SqlParameter("phoneNumberConfirmed", SqlDbType.Bit) {SqlValue = user.PhoneNumberConfirmed, Direction = ParameterDirection.Input},
+                new SqlParameter("twoFactorEnabled", SqlDbType.Bit) {SqlValue = user.TwoFactorEnabled, Direction = ParameterDirection.Input},
+                new SqlParameter("lockoutEndDateUtc", SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input},
+                new SqlParameter("lockoutEnabled", SqlDbType.Bit) {SqlValue = user.LockoutEnabled, Direction = ParameterDirection.Input},
+                new SqlParameter("accessFailedCount", SqlDbType.Int) {SqlValue = user.AccessFailedCount, Direction = ParameterDirection.Input},
+                new SqlParameter("userName",SqlDbType.NVarChar,50) {SqlValue = user.UserName, Direction = ParameterDirection.Input}
+            };
+            return StoredProcedure(commandText, parameters);
         }
         public SqlParameter[] UserDeleteById(int userId)
         {
-            throw new NotImplementedException();
+            string commandText = "dbo.UserDeleteById";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("id",SqlDbType.Int) {SqlValue = userId, Direction = ParameterDirection.Input}
+            };
+            return StoredProcedure(commandText, parameters);
         }
         public SqlParameter[] UserFindById(int userId)
         {
-            throw new NotImplementedException();
+            string commandText = "dbo.UserFindById";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("id",SqlDbType.Int) {SqlValue = userId, Direction = ParameterDirection.Input},
+                new SqlParameter("email",SqlDbType.NVarChar, 50) {Direction = ParameterDirection.Output},
+                new SqlParameter("emailConfirmed",SqlDbType.Bit) {Direction = ParameterDirection.Output},
+                new SqlParameter("passwordHash", SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output},
+                new SqlParameter("securityStamp", SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output},
+                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output},
+                new SqlParameter("phoneNumberConfirmed", SqlDbType.Bit) {Direction = ParameterDirection.Output},
+                new SqlParameter("twoFactorEnabled", SqlDbType.Bit) {Direction = ParameterDirection.Output},
+                new SqlParameter("lockoutEndDateUtc", SqlDbType.DateTime) {Direction = ParameterDirection.Output},
+                new SqlParameter("lockoutEnabled", SqlDbType.Bit) {Direction = ParameterDirection.Output},
+                new SqlParameter("accessFailedCount", SqlDbType.Int) {Direction = ParameterDirection.Output},
+                new SqlParameter("userName",SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output}
+            };
+            return StoredProcedure(commandText, parameters);
         }
-        public SqlParameter[] UserFindByName(string userName)
+        public AppUser UserFindByName(string userName)
         {
             string commandText = "dbo.UserFindByName";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("userName", SqlDbType.NVarChar, 50) {SqlValue = userName, Direction = ParameterDirection.Input},
                 new SqlParameter("id",SqlDbType.Int) {Direction = ParameterDirection.Output},
-                new SqlParameter("Email",SqlDbType.NVarChar, 50) {Direction = ParameterDirection.Output},
-                new SqlParameter("EmailConfirmed",SqlDbType.Bit) {Direction = ParameterDirection.Output},
-                new SqlParameter("PasswordHash", SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
-                new SqlParameter("SecurityStamp", SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},                
-                new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output},
-                new SqlParameter("PhoneNumberConfirmed", SqlDbType.Bit) { Direction = ParameterDirection.Output},
-                new SqlParameter("TwoFactorEnabled", SqlDbType.Bit) { Direction = ParameterDirection.Output},
-                new SqlParameter("LockoutEndDateUtc", SqlDbType.DateTime) {Direction = ParameterDirection.Output },
-                new SqlParameter("LockoutEnabled", SqlDbType.Bit) { Direction = ParameterDirection.Output},
-                new SqlParameter("AccessFailedCount", SqlDbType.Int) { Direction = ParameterDirection.Output},
-                new SqlParameter("UserName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
-    };       
-            return StoredProcedure(commandText, parameters);
+               // new SqlParameter("Email",SqlDbType.NVarChar, 50) {Direction = ParameterDirection.Output},
+                //new SqlParameter("EmailConfirmed",SqlDbType.Bit) {Direction = ParameterDirection.Output},
+                //new SqlParameter("PasswordHash", SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                //new SqlParameter("SecurityStamp", SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},                
+                //new SqlParameter("phoneNumber",SqlDbType.NVarChar,50) {Direction = ParameterDirection.Output},
+                //new SqlParameter("PhoneNumberConfirmed", SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                //new SqlParameter("TwoFactorEnabled", SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                //new SqlParameter("LockoutEndDateUtc", SqlDbType.DateTime) {Direction = ParameterDirection.Output },
+                //new SqlParameter("LockoutEnabled", SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                //new SqlParameter("AccessFailedCount", SqlDbType.Int) { Direction = ParameterDirection.Output},
+                //new SqlParameter("UserName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+            };       
+            parameters = StoredProcedure(commandText, parameters);
+            AppUser user = new AppUser();
+
+            user.Id =  Convert.IsDBNull(parameters[1].Value) ? 0 : Convert.ToInt32(parameters[1].Value);
+            
+            return null;
         }
         public SqlParameter[] UserUpdateById(AppUser user)
         {
@@ -180,7 +222,7 @@ namespace Models
                 new SqlParameter("accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Input},
                 new SqlParameter("userName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Input}
             };
-            throw new NotImplementedException();
+            return StoredProcedure(commandText, parameters);
         }
 
 

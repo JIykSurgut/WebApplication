@@ -55,7 +55,8 @@ namespace Models
         }
         public Task<AppUser> FindByNameAsync(string userName)
         {
-            SqlParameter[] parameters = dbContext.UserFindByName(userName);
+            dbContext.UserFindByName(userName);
+            //SqlParameter[] parameters = dbContext.UserFindByName(userName);
             //SqlDataReader reader = ((Oracle.ManagedDataAccess.Types.OracleRefCursor)parameters[1].Value).GetDataReader();
             //reader.Read();
 
