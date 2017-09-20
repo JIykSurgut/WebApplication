@@ -24,7 +24,8 @@ namespace Models
 
         public Task<List<AppUser>> GetUsersAsync()
         {
-            return appUserStore.UsersGetAllAsync();
+            //return appUserStore.UsersGetAllAsync();
+            return null;
         }
 
         public static AppUserManager Create(IdentityFactoryOptions<AppUserManager> options, IOwinContext context)
