@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class AppUserStore :
-        IUserStore<AppUser, int>,
-        IUserPasswordStore<AppUser, int>,
-        IUserLockoutStore<AppUser, int>
+    public class UserStore :
+        IUserStore<User, int>,
+        IUserPasswordStore<User, int>,
+        IUserLockoutStore<User, int>
     {
         public AppDbContext dbContext
         {
@@ -18,11 +18,8 @@ namespace Models
             private set;
         }
 
-        public AppUserStore(AppDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
-
+        public UserStore(AppDbContext dbContext) => this.dbContext = dbContext;
+        
         public void Dispose()
         {
             if (dbContext != null)
@@ -33,26 +30,17 @@ namespace Models
         }
 
         #region IUserStore
-        public Task CreateAsync(AppUser user) => throw new NotImplementedException();       
-        public Task DeleteAsync(AppUser user) => throw new NotImplementedException();
-        public Task<AppUser> FindByIdAsync(int userId) => Task.FromResult<AppUser>(dbContext.UserFindById(userId));
-        public Task<AppUser> FindByNameAsync(string userName) => Task.FromResult<AppUser>(dbContext.UserFindByName(userName));
-        public Task UpdateAsync(AppUser user) => throw new NotImplementedException();        
+        public Task CreateAsync(User user) => throw new NotImplementedException();       
+        public Task DeleteAsync(User user) => throw new NotImplementedException();
+        public Task<User> FindByIdAsync(int userId) => Task.FromResult<User>(dbContext.UserFindById(userId));
+        public Task<User> FindByNameAsync(string userName) => Task.FromResult<User>(dbContext.UserFindByName(userName));
+        public Task UpdateAsync(User user) => throw new NotImplementedException();        
         #endregion
 
         #region IUserPasswordStore
-        public Task<string> GetPasswordHashAsync(AppUser user)
-        {
-            return Task.FromResult<string>(user.PasswordHash);
-        }
-        public Task<bool> HasPasswordAsync(AppUser user)
-        {
-            bool result = false;
-            if (user.PasswordHash != null) result = true;
-
-            return Task.FromResult<bool>(result);
-        }
-        public Task SetPasswordHashAsync(AppUser user, string passwordHash)
+        public Task<string> GetPasswordHashAsync(User user) => Task.FromResult<string>(user.PasswordHash);       
+        public Task<bool> HasPasswordAsync(User user) => Task.FromResult<bool>((user.PasswordHash != null) ? true : false);   
+        public Task SetPasswordHashAsync(User user, string passwordHash)
         {
             user.PasswordHash = passwordHash;
             return Task.FromResult<object>(null);
@@ -60,47 +48,27 @@ namespace Models
         #endregion
 
         #region IUserLockoutStore :IUserStore, IDisposable
-        //
-        //Task<int> GetAccessFailedCountAsync(TUser user)                   возвращает кол-во неудачных попыток входа
-        //Task<bool> GetLockoutEnabledAsync(TUser user)                     может пользователь быть заблокирован?
-        //Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)           получить дату окончания блокировки
-        //Task<int> IncrementAccessFailedCountAsync(TUser user)             инкремент неудачных попыток входа
-        //Task ResetAccessFailedCountAsync(TUser user)                      сброс неудачных попыток входа
-        //Task SetLockoutEnabledAsync(TUser user, bool enabled)             устанавливает блокировку пользователя
-        //Task SetLockoutEndDateAsync(TUser user,DateTimeOffset lockoutEnd) задает дату окончания блокировки
-        public Task<int> GetAccessFailedCountAsync(AppUser user)
-        {
-            return Task.FromResult(user.AccessFailedCount);
-        }
-        public Task<bool> GetLockoutEnabledAsync(AppUser user)
-        {
-            return Task.FromResult(user.LockoutEnabled);
-        }
-        public Task<DateTimeOffset> GetLockoutEndDateAsync(AppUser user)
+        public Task<int> GetAccessFailedCountAsync(User user) => Task.FromResult(user.AccessFailedCount);        
+        public Task<bool> GetLockoutEnabledAsync(User user) => Task.FromResult(user.LockoutEnabled);     
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)
         {
             DateTimeOffset dateTimeOffset = DateTime.SpecifyKind(user.LockoutEndDateUtc, DateTimeKind.Utc);
             return Task.FromResult(dateTimeOffset);
         }
-        public Task<int> IncrementAccessFailedCountAsync(AppUser user)
-        {
-            return Task.FromResult(++user.AccessFailedCount);
-        }
-        public Task ResetAccessFailedCountAsync(AppUser user)
+        public Task<int> IncrementAccessFailedCountAsync(User user) => Task.FromResult(++user.AccessFailedCount);
+        public Task ResetAccessFailedCountAsync(User user)
         {
             user.AccessFailedCount = 0;
-            dbContext.UserUpdateById(user);
             return Task.FromResult<object>(null);
         }
-        public Task SetLockoutEnabledAsync(AppUser user, bool enabled)
+        public Task SetLockoutEnabledAsync(User user, bool enabled)
         {
             user.LockoutEnabled = enabled;
-            dbContext.UserUpdateById(user);
             return Task.FromResult<object>(null);
         }
-        public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset lockoutEnd)
+        public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
         {
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
-            dbContext.UserUpdateById(user);
             return Task.FromResult<object>(null);
         }
         #endregion
