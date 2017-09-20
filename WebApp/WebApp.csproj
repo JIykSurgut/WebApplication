@@ -25,6 +25,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -162,7 +163,7 @@
     <Compile Include="Models\Identity\Account\AccountViewModels.cs" />
     <Compile Include="Models\Identity\Role\AppRole.cs" />
     <Compile Include="Models\Identity\Role\RoleStore.cs" />
-    <Compile Include="Models\Identity\User\AppUser.cs" />
+    <Compile Include="Models\Identity\User\User.cs" />
     <Compile Include="Models\Identity\User\UserStore.cs" />
     <Compile Include="Models\Manager\AppRoleManager.cs" />
     <Compile Include="Models\Manager\AppSignInManage.cs" />

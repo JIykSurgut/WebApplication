@@ -8,9 +8,9 @@ using System;
 
 namespace Models
 {
-    public class AppUserManager : UserManager<AppUser, int>
+    public class UserManager : UserManager<AppUser, int>
     {
-        public AppUserManager(AppUserStore appUserStore)
+        public UserManager(AppUserStore appUserStore)
             : base(appUserStore)
         {
             this.appUserStore = appUserStore;

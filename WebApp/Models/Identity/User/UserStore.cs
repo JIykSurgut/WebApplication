@@ -32,42 +32,15 @@ namespace Models
             }
         }
 
-        #region IUserStore :IDisposable
-        //
-        //Task CreateAsync(TUser user)                 добавить нового пользователя
-        //Task DeleteAsync(TUser user)                 удалить пользователя
-        //Task<TUser> FindByIdAsync(TKey userId)       найти пользователя по ID
-        //Task<TUser> FindByNameAsync(string userName) найти пользователя по имени
-        //Task UpdateAsync(TUser user)                 обновить данные пользователя
-        public Task CreateAsync(AppUser user)
-        {
-            IRoleStore <>
-            throw new NotImplementedException();
-        }
-        public Task DeleteAsync(AppUser user)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<AppUser> FindByIdAsync(int userId)
-        {
-            return Task.FromResult<AppUser>(dbContext.UserFindById(userId));
-        }
-        public Task<AppUser> FindByNameAsync(string userName)
-        {
-            return Task.FromResult<AppUser>(dbContext.UserFindByName(userName));
-        }
-        
-        public Task UpdateAsync(AppUser user)
-        {
-            throw new NotImplementedException();
-        }
+        #region IUserStore
+        public Task CreateAsync(AppUser user) => throw new NotImplementedException();       
+        public Task DeleteAsync(AppUser user) => throw new NotImplementedException();
+        public Task<AppUser> FindByIdAsync(int userId) => Task.FromResult<AppUser>(dbContext.UserFindById(userId));
+        public Task<AppUser> FindByNameAsync(string userName) => Task.FromResult<AppUser>(dbContext.UserFindByName(userName));
+        public Task UpdateAsync(AppUser user) => throw new NotImplementedException();        
         #endregion
 
-        #region IUserPasswordStore :IUserStore, IDisposable
-        //
-        //Task<string> GetPasswordHashAsync(TUser user)              получить хеш-пароль пользователя
-        //Task<bool> HasPasswordAsync(TUser user)                    есть ли пароль у пользователя
-        //Task SetPasswordHashAsync(TUser user, string passwordHash) записать хеш-пароль пользователю
+        #region IUserPasswordStore
         public Task<string> GetPasswordHashAsync(AppUser user)
         {
             return Task.FromResult<string>(user.PasswordHash);
