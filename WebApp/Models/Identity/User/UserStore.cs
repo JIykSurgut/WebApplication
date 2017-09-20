@@ -41,6 +41,7 @@ namespace Models
         //Task UpdateAsync(TUser user)                 обновить данные пользователя
         public Task CreateAsync(AppUser user)
         {
+            IRoleStore <>
             throw new NotImplementedException();
         }
         public Task DeleteAsync(AppUser user)
