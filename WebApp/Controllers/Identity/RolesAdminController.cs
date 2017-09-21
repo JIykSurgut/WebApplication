@@ -18,35 +18,36 @@ namespace ZDL.Controllers
         public RolesAdminController()
         {
         }
-        public AppUserManager appUserManager
+        public UserManager<User, int> UserManager
         {
-            get { return HttpContext.GetOwinContext().GetUserManager<AppUserManager>(); }
+            get { return HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>(); }
         }
-        public AppRoleManager appRoleManager
+        public RoleManager<Role, int> RoleManager
         {
-            get { return HttpContext.GetOwinContext().Get<AppRoleManager>(); }
+            get { return HttpContext.GetOwinContext().Get<RoleManager<Role, int>>(); }
         }
 
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            return View(await appRoleManager.GetRolesAsync());
+            //return View(await RoleManager.GetRolesAsync());
+            return null;
         }
 
         [HttpGet]
         public async Task<ActionResult> Details(int id)
         {
-            AppRole role = await appRoleManager.FindByIdAsync(id);
+            Role role = await RoleManager.FindByIdAsync(id);
             if (role != null)
             {
-                List<AppUser> users = new List<AppUser>();
-                foreach (AppUser user in await appUserManager.GetUsersAsync())
-                {
-                    if (await appUserManager.IsInRoleAsync(user.Id, role.Name))
-                    {
-                        users.Add(user);
-                    }
-                }
+                List<User> users = new List<User>();
+                //foreach (User user in await UserManager.GetUsersAsync())
+                //{
+                //    if (await UserManager.IsInRoleAsync(user.Id, role.Name))
+                //    {
+                //        users.Add(user);
+                //    }
+                //}
                 ViewBag.Users = users;
                 ViewBag.UserCount = users.Count();
                 return View(role);
@@ -60,11 +61,11 @@ namespace ZDL.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Create(AppRole role)
+        public async Task<ActionResult> Create(Role role)
         {
             if (ModelState.IsValid)
             {
-                IdentityResult identityResult = await appRoleManager.CreateAsync(role);
+                IdentityResult identityResult = await RoleManager.CreateAsync(role);
                 if (identityResult.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -78,7 +79,7 @@ namespace ZDL.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(int id)
         {
-            AppRole role = await appRoleManager.FindByIdAsync(id);
+            Role role = await RoleManager.FindByIdAsync(id);
             if (role != null)
             {
                 return View(role);
@@ -86,14 +87,14 @@ namespace ZDL.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(AppRole role)
+        public async Task<ActionResult> Edit(Role role)
         {
             if (ModelState.IsValid)
             {
-                AppRole roleValid = await appRoleManager.FindByIdAsync(role.Id);
+                Role roleValid = await RoleManager.FindByIdAsync(role.Id);
                 if (roleValid != null)
                 {
-                    IdentityResult identityResult = await appRoleManager.UpdateAsync(role);
+                    IdentityResult identityResult = await RoleManager.UpdateAsync(role);
                     if (identityResult.Succeeded)
                     {
                         return RedirectToAction("Index");
@@ -110,7 +111,7 @@ namespace ZDL.Controllers
         [HttpGet] //!
         public async Task<ActionResult> Delete(int id)
         {
-            AppRole role = await appRoleManager.FindByIdAsync(id);
+            Role role = await RoleManager.FindByIdAsync(id);
             if (role != null)
             {
                 return View(role);
@@ -121,10 +122,10 @@ namespace ZDL.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             //Удалить у пользователей удаленную роль
-            AppRole role = await appRoleManager.FindByIdAsync(id);
+            Role role = await RoleManager.FindByIdAsync(id);
             if (role != null)
             {
-                IdentityResult identityResult = await appRoleManager.DeleteAsync(role);
+                IdentityResult identityResult = await RoleManager.DeleteAsync(role);
                 if (identityResult.Succeeded)
                 {
                     return RedirectToAction("Index");

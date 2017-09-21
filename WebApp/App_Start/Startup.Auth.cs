@@ -13,9 +13,9 @@ namespace WebApp
         public void ConfigureAuth(IAppBuilder app)
         {
             app.CreatePerOwinContext((IdentityFactoryOptions<DbContext> options, IOwinContext context) => new DbContext());
-            app.CreatePerOwinContext((IdentityFactoryOptions<UserManager> options, IOwinContext context) => new UserManager(new UserStore(context.Get<DbContext>())));
-            app.CreatePerOwinContext((IdentityFactoryOptions<RoleManager<Role, int>> options, IOwinContext context) => new RoleManager<Role, int>( new RoleStore(context.Get<DbContext>())));
-            app.CreatePerOwinContext<SignInManager>(SignInManager.Create);
+            app.CreatePerOwinContext((IdentityFactoryOptions<UserManager<User, int>> options, IOwinContext context) => new UserManager<User, int>(new UserStore(context.Get<DbContext>())));
+            app.CreatePerOwinContext((IdentityFactoryOptions<RoleManager<Role, int>> options, IOwinContext context) => new RoleManager<Role, int>(new RoleStore(context.Get<DbContext>())));
+            app.CreatePerOwinContext((IdentityFactoryOptions<SignInManager<User, int>> options, IOwinContext context) => new SignInManager<User, int>(context.Get<UserManager<User, int>>(), context.Authentication));
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {

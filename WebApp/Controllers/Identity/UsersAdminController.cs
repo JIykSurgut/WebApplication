@@ -17,29 +17,30 @@ namespace ZDL.Controllers
         public UsersAdminController()
         {
         }
-        public UserManager appUserManager
+        public UserManager<User, int> UserManager
         {
-            get { return HttpContext.GetOwinContext().GetUserManager<UserManager>(); }
+            get { return HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>(); }
 
         }
-        public RoleManager appRoleManager
+        public RoleManager<Role, int> RoleManager
         {
-            get { return HttpContext.GetOwinContext().Get<RoleManager>(); }
+            get { return HttpContext.GetOwinContext().Get<RoleManager<Role, int>>(); }
         }
 
         [HttpGet] //OK
         public async Task<ActionResult> Index()
         {
-            return View(await appUserManager.GetUsersAsync());
+            //return View(await UserManager.GetUsersAsync());
+            return null;
         }
 
         [HttpGet] //OK
         public async Task<ActionResult> Details(int id)
         {
-            User user = await appUserManager.FindByIdAsync(id);
+            User user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
-                ViewBag.RoleNames = await appUserManager.GetRolesAsync(user.Id);
+                ViewBag.RoleNames = await UserManager.GetRolesAsync(user.Id);
                 return View(user);
             }
             return RedirectToAction("Index");
@@ -48,7 +49,7 @@ namespace ZDL.Controllers
         [HttpGet] //OK
         public async Task<ActionResult> Create()
         {
-            ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
+            //ViewBag.Roles = new SelectList(await RoleManager.GetRolesAsync(), "Name", "Name");
             return View();
         }
         [HttpPost] //OK!
@@ -56,19 +57,19 @@ namespace ZDL.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityResult userInsertResult = await appUserManager.CreateAsync(user, user.PasswordHash);
+                IdentityResult userInsertResult = await UserManager.CreateAsync(user, user.PasswordHash);
 
                 if (userInsertResult.Succeeded)
                 {
                     if (selectedRoles != null)
                     {
-                        User userInsert = await appUserManager.FindByNameAsync(user.UserName);
+                        User userInsert = await UserManager.FindByNameAsync(user.UserName);
 
-                        IdentityResult addToRoleResult = await appUserManager.AddToRolesAsync(userInsert.Id, selectedRoles);
+                        IdentityResult addToRoleResult = await UserManager.AddToRolesAsync(userInsert.Id, selectedRoles);
                         if (!addToRoleResult.Succeeded)
                         {
                             ModelState.AddModelError("", addToRoleResult.Errors.First());
-                            ViewBag.RoleId = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
+                            //ViewBag.RoleId = new SelectList(await RoleManager.GetRolesAsync(), "Name", "Name");
                             return View(); //? передача user и ролей
                         }
                         return RedirectToAction("Index");
@@ -77,76 +78,78 @@ namespace ZDL.Controllers
                 else
                 {
                     ModelState.AddModelError("", userInsertResult.Errors.First());
-                    ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
+                    //ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
                     return View(); //? передача user и ролей
 
                 }
             }
-            ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
+            //ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
             return View(); //? передача user и ролей
         }
 
         [HttpGet] //OK
         public async Task<ActionResult> Edit(int id)
         {
-            User user = await appUserManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                IList<string> rolesNameUser = await appUserManager.GetRolesAsync(user.Id);
-                IList<Role> rolesAll = await RoleManager.GetRolesAsync();
+            //User user = await UserManager.FindByIdAsync(id);
+            //if (user != null)
+            //{
+            //    IList<string> rolesNameUser = await UserManager.GetRolesAsync(user.Id);
+            //    //IList<Role> rolesAll = await RoleManager.GetRolesAsync();
 
-                List<SelectListItem> roles = new List<SelectListItem>();
-                foreach (Role role in rolesAll)
-                {
-                    roles.Add(new SelectListItem()
-                    {
-                        Selected = (rolesNameUser.Contains(role.Name)),
-                        Text = role.Name,
-                        Value = Convert.ToString(role.Id)
-                    });
-                }
+            //    List<SelectListItem> roles = new List<SelectListItem>();
+            //    foreach (Role role in rolesAll)
+            //    {
+            //        roles.Add(new SelectListItem()
+            //        {
+            //            Selected = (rolesNameUser.Contains(role.Name)),
+            //            Text = role.Name,
+            //            Value = Convert.ToString(role.Id)
+            //        });
+            //    }
 
-                ViewBag.Roles = roles;
-                return View(user);
-            }
-            return RedirectToAction("Index");
+            //    ViewBag.Roles = roles;
+            //    return View(user);
+            //}
+            //return RedirectToAction("Index");
+            return null;
         }
         [HttpPost]
         public async Task<ActionResult> Edit(User user, params string[] selectedRole)
         {
-            if (ModelState.IsValid)
-            {
-                User userValid = await appUserManager.FindByIdAsync(user.Id);
-                if (userValid != null)
-                {
-                    user.PasswordHash = userValid.PasswordHash;
-                    IdentityResult identity = await appUserManager.UpdateAsync(user);
+            //if (ModelState.IsValid)
+            //{
+            //    User userValid = await UserManager.FindByIdAsync(user.Id);
+            //    if (userValid != null)
+            //    {
+            //        user.PasswordHash = userValid.PasswordHash;
+            //        IdentityResult identity = await UserManager.UpdateAsync(user);
 
-                    List<Role> roles = await RoleManager.GetRolesAsync();
+            //        List<Role> roles = await RoleManager.GetRolesAsync();
 
 
-                    foreach (Role role in roles)
-                    {
-                        if (selectedRole != null && selectedRole.Contains(role.Name))
-                        {
-                            await appUserManager.AddToRoleAsync(userValid.Id, role.Name);
-                        }
-                        else
-                        {
-                            await appUserManager.RemoveFromRoleAsync(userValid.Id, role.Name);
-                        }
-                    }
-                    return RedirectToAction("Index");
-                }
-            }
-            ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
-            return View(); //передать user и роли
+            //        foreach (Role role in roles)
+            //        {
+            //            if (selectedRole != null && selectedRole.Contains(role.Name))
+            //            {
+            //                await appUserManager.AddToRoleAsync(userValid.Id, role.Name);
+            //            }
+            //            else
+            //            {
+            //                await appUserManager.RemoveFromRoleAsync(userValid.Id, role.Name);
+            //            }
+            //        }
+            //        return RedirectToAction("Index");
+            //    }
+            //}
+            //ViewBag.Roles = new SelectList(await appRoleManager.GetRolesAsync(), "Name", "Name");
+            //return View(); //передать user и роли
+            return null;
         }
 
         [HttpGet] //OK
         public async Task<ActionResult> Delete(int id)
         {
-            User user = await appUserManager.FindByIdAsync(id);
+            User user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
                 return View(user);
@@ -157,10 +160,10 @@ namespace ZDL.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             //Необходимо реализовать удаление всех ролей у удаленного пользователя
-            User user = await appUserManager.FindByIdAsync(id);
+            User user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
-                IdentityResult identityResult = await appUserManager.DeleteAsync(user);
+                IdentityResult identityResult = await UserManager.DeleteAsync(user);
                 if (identityResult.Succeeded)
                 {
                     return RedirectToAction("Index");
