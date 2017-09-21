@@ -17,14 +17,14 @@ namespace ZDL.Controllers
         public UsersAdminController()
         {
         }
-        public AppUserManager appUserManager
+        public UserManager appUserManager
         {
-            get { return HttpContext.GetOwinContext().GetUserManager<AppUserManager>(); }
+            get { return HttpContext.GetOwinContext().GetUserManager<UserManager>(); }
 
         }
-        public AppRoleManager appRoleManager
+        public RoleManager appRoleManager
         {
-            get { return HttpContext.GetOwinContext().Get<AppRoleManager>(); }
+            get { return HttpContext.GetOwinContext().Get<RoleManager>(); }
         }
 
         [HttpGet] //OK
@@ -36,7 +36,7 @@ namespace ZDL.Controllers
         [HttpGet] //OK
         public async Task<ActionResult> Details(int id)
         {
-            AppUser user = await appUserManager.FindByIdAsync(id);
+            User user = await appUserManager.FindByIdAsync(id);
             if (user != null)
             {
                 ViewBag.RoleNames = await appUserManager.GetRolesAsync(user.Id);
@@ -52,7 +52,7 @@ namespace ZDL.Controllers
             return View();
         }
         [HttpPost] //OK!
-        public async Task<ActionResult> Create(AppUser user, params string[] selectedRoles)
+        public async Task<ActionResult> Create(User user, params string[] selectedRoles)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace ZDL.Controllers
                 {
                     if (selectedRoles != null)
                     {
-                        AppUser userInsert = await appUserManager.FindByNameAsync(user.UserName);
+                        User userInsert = await appUserManager.FindByNameAsync(user.UserName);
 
                         IdentityResult addToRoleResult = await appUserManager.AddToRolesAsync(userInsert.Id, selectedRoles);
                         if (!addToRoleResult.Succeeded)
@@ -89,14 +89,14 @@ namespace ZDL.Controllers
         [HttpGet] //OK
         public async Task<ActionResult> Edit(int id)
         {
-            AppUser user = await appUserManager.FindByIdAsync(id);
+            User user = await appUserManager.FindByIdAsync(id);
             if (user != null)
             {
                 IList<string> rolesNameUser = await appUserManager.GetRolesAsync(user.Id);
-                IList<AppRole> rolesAll = await appRoleManager.GetRolesAsync();
+                IList<Role> rolesAll = await RoleManager.GetRolesAsync();
 
                 List<SelectListItem> roles = new List<SelectListItem>();
-                foreach (AppRole role in rolesAll)
+                foreach (Role role in rolesAll)
                 {
                     roles.Add(new SelectListItem()
                     {
@@ -112,20 +112,20 @@ namespace ZDL.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public async Task<ActionResult> Edit(AppUser user, params string[] selectedRole)
+        public async Task<ActionResult> Edit(User user, params string[] selectedRole)
         {
             if (ModelState.IsValid)
             {
-                AppUser userValid = await appUserManager.FindByIdAsync(user.Id);
+                User userValid = await appUserManager.FindByIdAsync(user.Id);
                 if (userValid != null)
                 {
                     user.PasswordHash = userValid.PasswordHash;
                     IdentityResult identity = await appUserManager.UpdateAsync(user);
 
-                    List<AppRole> roles = await appRoleManager.GetRolesAsync();
+                    List<Role> roles = await RoleManager.GetRolesAsync();
 
 
-                    foreach (AppRole role in roles)
+                    foreach (Role role in roles)
                     {
                         if (selectedRole != null && selectedRole.Contains(role.Name))
                         {
@@ -146,7 +146,7 @@ namespace ZDL.Controllers
         [HttpGet] //OK
         public async Task<ActionResult> Delete(int id)
         {
-            AppUser user = await appUserManager.FindByIdAsync(id);
+            User user = await appUserManager.FindByIdAsync(id);
             if (user != null)
             {
                 return View(user);
@@ -157,7 +157,7 @@ namespace ZDL.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             //Необходимо реализовать удаление всех ролей у удаленного пользователя
-            AppUser user = await appUserManager.FindByIdAsync(id);
+            User user = await appUserManager.FindByIdAsync(id);
             if (user != null)
             {
                 IdentityResult identityResult = await appUserManager.DeleteAsync(user);

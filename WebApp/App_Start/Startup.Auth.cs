@@ -3,6 +3,8 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using Models;
+using Microsoft.AspNet.Identity.Owin;
+
 
 namespace WebApp
 {
@@ -10,10 +12,10 @@ namespace WebApp
     {
         public void ConfigureAuth(IAppBuilder app)
         {
-            app.CreatePerOwinContext<AppDbContext>(AppDbContext.Create);
-            app.CreatePerOwinContext<AppUserManager>(AppUserManager.Create);
-            app.CreatePerOwinContext<AppRoleManager>(AppRoleManager.Create);
-            app.CreatePerOwinContext<AppSignInManager>(AppSignInManager.Create);
+            app.CreatePerOwinContext((IdentityFactoryOptions<DbContext> options, IOwinContext context) => new DbContext());
+            app.CreatePerOwinContext((IdentityFactoryOptions<UserManager> options, IOwinContext context) => new UserManager(new UserStore(context.Get<DbContext>())));
+            app.CreatePerOwinContext((IdentityFactoryOptions<RoleManager<Role, int>> options, IOwinContext context) => new RoleManager<Role, int>( new RoleStore(context.Get<DbContext>())));
+            app.CreatePerOwinContext<SignInManager>(SignInManager.Create);
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {

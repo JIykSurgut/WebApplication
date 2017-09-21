@@ -14,7 +14,7 @@ namespace Controllers
         {
         }
 
-        public AccountController(UserManager userManager, AppSignInManager signInManager)
+        public AccountController(UserManager userManager, SignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,13 +34,13 @@ namespace Controllers
         }
 
 
-        private AppSignInManager _signInManager;
+        private SignInManager _signInManager;
 
-        public AppSignInManager SignInManager
+        public SignInManager SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<AppSignInManager>();
+                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInManager>();
             }
             private set { _signInManager = value; }
         }

@@ -51,7 +51,7 @@ namespace Models
         }
         #endregion
 
-        public Task<List<Role>> RolesGetAll()
+        static public Task<List<Role>> RolesGetAll()
         {
             throw new NotImplementedException();
         }

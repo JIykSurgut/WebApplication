@@ -28,9 +28,7 @@ namespace Models
                 connectionString = null;
             }
         }
-
-        public static DbContext Create() => new DbContext();   
-
+ 
         #region DataBase
         private void ConnectionOpen()
         {
