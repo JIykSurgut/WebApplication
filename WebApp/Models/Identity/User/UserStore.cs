@@ -12,14 +12,17 @@ namespace Models
         IUserPasswordStore<User, int>,
         IUserLockoutStore<User, int>
     {
-        public AppDbContext dbContext
+        public DbContext dbContext
         {
             get;
             private set;
         }
 
-        public UserStore(AppDbContext dbContext) => this.dbContext = dbContext;
-        
+        public UserStore(DbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         public void Dispose()
         {
             if (dbContext != null)
@@ -30,16 +33,28 @@ namespace Models
         }
 
         #region IUserStore
-        public Task CreateAsync(User user) => throw new NotImplementedException();       
-        public Task DeleteAsync(User user) => throw new NotImplementedException();
-        public Task<User> FindByIdAsync(int userId) => Task.FromResult<User>(dbContext.UserFindById(userId));
-        public Task<User> FindByNameAsync(string userName) => Task.FromResult<User>(dbContext.UserFindByName(userName));
-        public Task UpdateAsync(User user) => throw new NotImplementedException();        
+        public Task CreateAsync(User user)
+        {
+            dbContext.UserCreate(user);
+            return Task.FromResult<object>(null);
+        }
+        public Task DeleteAsync(User user)
+        {
+            dbContext.UserDelete(user);
+            return Task.FromResult<object>(null);
+        }
+        public Task<User> FindByIdAsync(int userId) => Task.FromResult(dbContext.UserFindById(userId));
+        public Task<User> FindByNameAsync(string userName) => Task.FromResult(dbContext.UserFindByName(userName));
+        public Task UpdateAsync(User user)
+        {
+            dbContext.UserUpdate(user);
+            return Task.FromResult<object>(null);
+        }
         #endregion
 
         #region IUserPasswordStore
-        public Task<string> GetPasswordHashAsync(User user) => Task.FromResult<string>(user.PasswordHash);       
-        public Task<bool> HasPasswordAsync(User user) => Task.FromResult<bool>((user.PasswordHash != null) ? true : false);   
+        public Task<string> GetPasswordHashAsync(User user) => Task.FromResult(user.PasswordHash);
+        public Task<bool> HasPasswordAsync(User user) => Task.FromResult(user.PasswordHash != null ? true : false);
         public Task SetPasswordHashAsync(User user, string passwordHash)
         {
             user.PasswordHash = passwordHash;
@@ -47,7 +62,7 @@ namespace Models
         }
         #endregion
 
-        #region IUserLockoutStore :IUserStore, IDisposable
+        #region IUserLockoutStore
         public Task<int> GetAccessFailedCountAsync(User user) => Task.FromResult(user.AccessFailedCount);        
         public Task<bool> GetLockoutEnabledAsync(User user) => Task.FromResult(user.LockoutEnabled);     
         public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)

@@ -5,38 +5,18 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public class AppRoleStore : IRoleStore<AppRole, int>
+    public class RoleStore : IRoleStore<Role, int>
     {
-        public AppDbContext dbContext
+        public DbContext dbContext
         {
             get; private set;
         }
-        public IRoleStore<AppRole, int> Roles
-        {
-            get { throw new NotImplementedException(); }
-        }
 
-        public AppRoleStore(AppDbContext dbContext)
+        public RoleStore(DbContext dbContext)
         {
             this.dbContext = dbContext;
         }
-              
-        #region IRoleStore
-        //
-        // Task CreateAsync(TRole role)                  добавить новую роль
-        // Task DeleteAsync(TRole role)                  удалить роль
-        // void Dispose()
-        // Task<TRole> FindByIdAsync(TKey roleId)        найти роль по ID
-        // Task<TRole> FindByNameAsync(string roleName)  найти роль по имени
-        // Task UpdateAsync(TRole role)                  обновить роль
-        public Task CreateAsync(AppRole role)
-        {
-            throw new NotImplementedException();
-        }
-        public Task DeleteAsync(AppRole role)
-        {
-            throw new NotImplementedException();
-        }
+
         public void Dispose()
         {
             if (dbContext != null)
@@ -45,21 +25,33 @@ namespace Models
                 dbContext = null;
             }
         }
-        public Task<AppRole> FindByIdAsync(int roleId)
+
+        public IRoleStore<Role, int> Roles
         {
-            throw new NotImplementedException();
+            get { throw new NotImplementedException(); }
         }
-        public Task<AppRole> FindByNameAsync(string roleName)
+                      
+        #region IRoleStore
+        public Task CreateAsync(Role role)
         {
-            throw new NotImplementedException();
+            dbContext.RoleCreate(role);
+            return Task.FromResult<object>(null);
         }
-        public Task UpdateAsync(AppRole role)
+        public Task DeleteAsync(Role role)
         {
-            throw new NotImplementedException();
+            dbContext.RoleDelete(role);
+            return Task.FromResult<object>(null);
+        }      
+        public Task<Role> FindByIdAsync(int roleId) => Task.FromResult(dbContext.RoleFindById(roleId));
+        public Task<Role> FindByNameAsync(string roleName) => Task.FromResult(dbContext.RoleFindByName(roleName));        
+        public Task UpdateAsync(Role role)
+        {
+            dbContext.RoleUpdate(role);
+            return Task.FromResult<object>(null);
         }
         #endregion
 
-        public Task<List<AppRole>> RolesGetAll()
+        public Task<List<Role>> RolesGetAll()
         {
             throw new NotImplementedException();
         }

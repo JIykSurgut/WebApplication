@@ -12,15 +12,7 @@ namespace Models
         public string PasswordHash { get; set; }           
         public bool LockoutEnabled { get; set; }           
         public int AccessFailedCount { get; set; }         
-        public DateTime LockoutEndDateUtc { get; set; }    
-
-        public User() => Id = 0;
-        
-        public User(string userName)
-            : this()
-        {
-            UserName = userName;
-        }
+        public DateTime LockoutEndDateUtc { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
         {
