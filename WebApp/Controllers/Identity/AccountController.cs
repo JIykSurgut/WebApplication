@@ -15,16 +15,13 @@ namespace Controllers
         public AccountController()
         {
         }
-
         public AccountController(UserManager<User, int> userManager, SignInManager<User, int> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
-
         private UserManager<User, int> userManager;
         private SignInManager<User, int> signInManager;
-
         public UserManager<User, int> UserManager
         {
             get
@@ -36,7 +33,6 @@ namespace Controllers
                 userManager = value;                
             }
         }
-
         public SignInManager<User, int> SignInManager
         {
             get
@@ -49,7 +45,8 @@ namespace Controllers
             }
         }
 
-        // GET: /Account/Login
+        #region /Account/Login
+        [HttpGet]
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -57,20 +54,14 @@ namespace Controllers
             return View();
         }
 
-        //POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            // This doen't count login failures towards lockout only two factor authentication
-            // To enable password failures to trigger lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+            if (!ModelState.IsValid) return View(model);
+            
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success: return RedirectToLocal(returnUrl);
@@ -78,12 +69,48 @@ namespace Controllers
                 case SignInStatus.RequiresVerification: return RedirectToAction("SendCode", new { ReturnUrl = returnUrl });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError("", "Неудачная попытка входа.");
                     return View(model);
             }
         }
+        #endregion
 
-        //POST: /Account/LogOff
+        #region /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Register() => View();
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Отправка сообщения электронной почты с этой ссылкой
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+
+                    return RedirectToAction("Index", "Home");
+                }
+                AddErrors(result);
+            }
+
+            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+            return View(model);
+        }
+        #endregion
+
+
+        //POST:
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -127,6 +154,13 @@ namespace Controllers
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");
+        }
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
         }
         #endregion
 

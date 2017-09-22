@@ -181,7 +181,7 @@ namespace Models
                 PasswordHash = Convert.IsDBNull(parameters[2].Value) ? "" : Convert.ToString(parameters[2].Value),
                 LockoutEnabled = Convert.IsDBNull(parameters[3].Value) ? false : Convert.ToBoolean(parameters[3].Value),
                 AccessFailedCount = Convert.IsDBNull(parameters[4].Value) ? 0 : Convert.ToInt32(parameters[4].Value),
-                LockoutEndDateUtc = Convert.IsDBNull(parameters[5].Value) ? new DateTime() : Convert.ToDateTime(parameters[5].Value),
+                LockoutEndDateUtc = Convert.IsDBNull(parameters[5].Value) ? DateTime.Now : Convert.ToDateTime(parameters[5].Value),
                 TwoFactorEnabled = Convert.IsDBNull(parameters[6].Value) ? false : Convert.ToBoolean(parameters[6].Value),
                 Email = Convert.IsDBNull(parameters[7].Value) ? "" : Convert.ToString(parameters[7].Value),
                 EmailConfirmed = Convert.IsDBNull(parameters[8].Value) ? false : Convert.ToBoolean(parameters[8].Value)
