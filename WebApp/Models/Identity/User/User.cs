@@ -13,6 +13,7 @@ namespace Models
         public bool LockoutEnabled { get; set; }           
         public int AccessFailedCount { get; set; }         
         public DateTime LockoutEndDateUtc { get; set; }
+        public bool TwoFactorEnabled { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
         {

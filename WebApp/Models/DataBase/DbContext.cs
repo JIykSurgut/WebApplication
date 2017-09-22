@@ -125,11 +125,12 @@ namespace Models
             SqlParameter[] parameters = new SqlParameter[] 
             {
                 new SqlParameter("@id",SqlDbType.Int) {SqlValue = userId, Direction = ParameterDirection.Input},
-                new SqlParameter("@userName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
-                new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                new SqlParameter("@userName",SqlDbType.NVarChar,256) { Direction = ParameterDirection.Output},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,512) { Direction = ParameterDirection.Output},
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
-                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output}
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output},
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output}
             };           
             return ParamToUser(StoredProcedure("dbo.UserFindById", parameters));
         }
@@ -138,11 +139,12 @@ namespace Models
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@id",SqlDbType.Int) { Direction = ParameterDirection.Output},
-                new SqlParameter("@userName",SqlDbType.NVarChar,50) {SqlValue = userName, Direction = ParameterDirection.Input},
-                new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                new SqlParameter("@userName",SqlDbType.NVarChar,256) {SqlValue = userName, Direction = ParameterDirection.Input},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,512) { Direction = ParameterDirection.Output},
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
-                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output}
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output},
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output}
             };
             return ParamToUser(StoredProcedure("dbo.UserFindByName", parameters));  
         }
@@ -160,7 +162,8 @@ namespace Models
                 new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) {SqlValue = user.PasswordHash, Direction = ParameterDirection.Input},
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) {SqlValue = user.LockoutEnabled, Direction = ParameterDirection.Input},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) {SqlValue = user.AccessFailedCount, Direction = ParameterDirection.Input},
-                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input}
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input},
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) {SqlValue = user.TwoFactorEnabled, Direction = ParameterDirection.Input}
             };
         } 
         private User ParamToUser(SqlParameter[] parameters)
@@ -172,7 +175,8 @@ namespace Models
                 PasswordHash = Convert.IsDBNull(parameters[2].Value) ? "" : Convert.ToString(parameters[2].Value),
                 LockoutEnabled = Convert.IsDBNull(parameters[3].Value) ? false : Convert.ToBoolean(parameters[3].Value),
                 AccessFailedCount = Convert.IsDBNull(parameters[4].Value) ? 0 : Convert.ToInt32(parameters[4].Value),
-                LockoutEndDateUtc = Convert.IsDBNull(parameters[5].Value) ? new DateTime() : Convert.ToDateTime(parameters[5].Value)
+                LockoutEndDateUtc = Convert.IsDBNull(parameters[5].Value) ? new DateTime() : Convert.ToDateTime(parameters[5].Value),
+                TwoFactorEnabled = Convert.IsDBNull(parameters[6].Value) ? false : Convert.ToBoolean(parameters[6].Value)
             };
         }
         #endregion

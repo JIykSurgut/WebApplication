@@ -10,7 +10,8 @@ namespace Models
     public class UserStore :
         IUserStore<User, int>,
         IUserPasswordStore<User, int>,
-        IUserLockoutStore<User, int>
+        IUserLockoutStore<User, int>,
+        IUserTwoFactorStore<User, int>
     {
         public DbContext dbContext
         {
@@ -84,6 +85,18 @@ namespace Models
         public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
         {
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
+            return Task.FromResult<object>(null);
+        }
+        #endregion
+
+        #region IUserTwoFactorStore
+        public Task<bool> GetTwoFactorEnabledAsync(User user)
+        {
+            return Task.FromResult(user.TwoFactorEnabled);
+        }
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled)
+        {
+            user.TwoFactorEnabled = enabled;
             return Task.FromResult<object>(null);
         }
         #endregion
