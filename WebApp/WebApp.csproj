@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -161,6 +162,7 @@
     </Compile>
     <Compile Include="Models\DataBase\DbContext.cs" />
     <Compile Include="Models\Identity\Account\AccountViewModels.cs" />
+    <Compile Include="Models\Identity\EmailService.cs" />
     <Compile Include="Models\Identity\Role\Role.cs" />
     <Compile Include="Models\Identity\Role\RoleStore.cs" />
     <Compile Include="Models\Identity\User\User.cs" />

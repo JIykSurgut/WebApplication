@@ -11,7 +11,8 @@ namespace Models
         IUserStore<User, int>,
         IUserPasswordStore<User, int>,
         IUserLockoutStore<User, int>,
-        IUserTwoFactorStore<User, int>
+        IUserTwoFactorStore<User, int>,
+        IUserEmailStore<User, int>
     {
         public DbContext dbContext
         {
@@ -80,12 +81,12 @@ namespace Models
         public Task SetLockoutEnabledAsync(User user, bool enabled)
         {
             user.LockoutEnabled = enabled;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
         {
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         #endregion
 
@@ -98,6 +99,22 @@ namespace Models
         {
             user.TwoFactorEnabled = enabled;
             return Task.FromResult<object>(null);
+        }
+        #endregion
+
+        #region
+        public Task<User> FindByEmailAsync(string email) => Task.FromResult(dbContext.FindByEmail(email));
+        public Task<string> GetEmailAsync(User user) => Task.FromResult(user.Email);
+        public Task<bool> GetEmailConfirmedAsync(User user) => Task.FromResult(user.EmailConfirmed);
+        public Task SetEmailAsync(User user, string email)
+        {
+            user.Email = email;
+            return Task.FromResult(0);
+        }
+        public Task SetEmailConfirmedAsync(User user, bool confirmed)
+        {
+            user.EmailConfirmed = confirmed;
+            return Task.FromResult(0);
         }
         #endregion
     }

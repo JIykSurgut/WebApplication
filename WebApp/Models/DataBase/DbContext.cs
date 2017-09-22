@@ -130,7 +130,9 @@ namespace Models
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
                 new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output},
-                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output}
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@email",SqlDbType.NVarChar,256) { Direction = ParameterDirection.Output},
+                new SqlParameter("@emailConfirmed",SqlDbType.Bit) { Direction = ParameterDirection.Output},
             };           
             return ParamToUser(StoredProcedure("dbo.UserFindById", parameters));
         }
@@ -144,13 +146,15 @@ namespace Models
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
                 new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output},
-                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output}
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@email",SqlDbType.NVarChar,256) { Direction = ParameterDirection.Output},
+                new SqlParameter("@emailConfirmed",SqlDbType.Bit) { Direction = ParameterDirection.Output},
             };
             return ParamToUser(StoredProcedure("dbo.UserFindByName", parameters));  
         }
         public void UserUpdate(User user)
         {
-            StoredProcedure("dbo.UserFindById", UserToParam(user));
+            StoredProcedure("dbo.UserUpdate", UserToParam(user));
         }
         #region Вспомогательные методы
         private SqlParameter[] UserToParam(User user)
@@ -163,7 +167,9 @@ namespace Models
                 new SqlParameter("@lockoutEnabled",SqlDbType.Bit) {SqlValue = user.LockoutEnabled, Direction = ParameterDirection.Input},
                 new SqlParameter("@accessFailedCount",SqlDbType.Int) {SqlValue = user.AccessFailedCount, Direction = ParameterDirection.Input},
                 new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input},
-                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) {SqlValue = user.TwoFactorEnabled, Direction = ParameterDirection.Input}
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) {SqlValue = user.TwoFactorEnabled, Direction = ParameterDirection.Input},
+                new SqlParameter("@email",SqlDbType.NVarChar,50) {SqlValue = user.Email, Direction = ParameterDirection.Input},
+                new SqlParameter("@emailConfirmed",SqlDbType.Bit) {SqlValue = user.EmailConfirmed, Direction = ParameterDirection.Input},
             };
         } 
         private User ParamToUser(SqlParameter[] parameters)
@@ -176,7 +182,9 @@ namespace Models
                 LockoutEnabled = Convert.IsDBNull(parameters[3].Value) ? false : Convert.ToBoolean(parameters[3].Value),
                 AccessFailedCount = Convert.IsDBNull(parameters[4].Value) ? 0 : Convert.ToInt32(parameters[4].Value),
                 LockoutEndDateUtc = Convert.IsDBNull(parameters[5].Value) ? new DateTime() : Convert.ToDateTime(parameters[5].Value),
-                TwoFactorEnabled = Convert.IsDBNull(parameters[6].Value) ? false : Convert.ToBoolean(parameters[6].Value)
+                TwoFactorEnabled = Convert.IsDBNull(parameters[6].Value) ? false : Convert.ToBoolean(parameters[6].Value),
+                Email = Convert.IsDBNull(parameters[7].Value) ? "" : Convert.ToString(parameters[7].Value),
+                EmailConfirmed = Convert.IsDBNull(parameters[8].Value) ? false : Convert.ToBoolean(parameters[8].Value)
             };
         }
         #endregion
@@ -215,5 +223,23 @@ namespace Models
         #endregion
         #endregion
 
+        #region IUserEmailStore
+        public User FindByEmail(string email)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id",SqlDbType.Int) { Direction = ParameterDirection.Output},
+                new SqlParameter("@userName",SqlDbType.NVarChar,256) { Direction = ParameterDirection.Output},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,512) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output},
+                new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@email",SqlDbType.NVarChar,256) {SqlValue = email, Direction = ParameterDirection.Input},
+                new SqlParameter("@emailConfirmed",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+            };
+            return ParamToUser(StoredProcedure("dbo.UserFindByEmail", parameters));
+        }  
+        #endregion
     }
 }

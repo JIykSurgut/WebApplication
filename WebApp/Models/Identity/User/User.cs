@@ -14,6 +14,8 @@ namespace Models
         public int AccessFailedCount { get; set; }         
         public DateTime LockoutEndDateUtc { get; set; }
         public bool TwoFactorEnabled { get; set; }
+        public string Email { get; set; }
+        public bool EmailConfirmed { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
         {

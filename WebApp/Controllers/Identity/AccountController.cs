@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Models;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
+using System.Net.Mail;
 
 namespace Controllers
 {
@@ -17,37 +18,37 @@ namespace Controllers
 
         public AccountController(UserManager<User, int> userManager, SignInManager<User, int> signInManager)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
-        private UserManager<User, int> _userManager;
+        private UserManager<User, int> userManager;
+        private SignInManager<User, int> signInManager;
+
         public UserManager<User, int> UserManager
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>();
+                return userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>();
             }
             private set
             {
-                _userManager = value;
-                
+                userManager = value;                
             }
         }
-
-
-        private SignInManager<User, int> _signInManager;
 
         public SignInManager<User, int> SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInManager<User, int>>();
+                return signInManager ?? HttpContext.GetOwinContext().Get<SignInManager<User, int>>();
             }
-            private set { _signInManager = value; }
+            private set
+            {
+                signInManager = value;
+            }
         }
 
-        //
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -55,7 +56,6 @@ namespace Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
-
 
         //POST: /Account/Login
         [HttpPost]
@@ -83,7 +83,6 @@ namespace Controllers
             }
         }
 
-
         //POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -93,8 +92,26 @@ namespace Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // GET:
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> Test()
+        {
+            int userId = 6;
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
+            var callbackUrl = Url.Action(
+               "ConfirmEmail", "Account",
+               new { userId = userId, code = code },
+               protocol: Request.Url.Scheme);
+
+            await UserManager.SendEmailAsync(userId,
+               "Confirm your account",
+               "Please confirm your account by clicking this link: <a href=\""
+                                               + callbackUrl + "\">link</a>");
+            return View();
+        }
+
         #region Helpers
-        //
         private IAuthenticationManager AuthenticationManager
         {
             get
@@ -111,7 +128,6 @@ namespace Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
         #endregion
 
     }
