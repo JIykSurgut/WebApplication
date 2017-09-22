@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Models;
 using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity;
 
 namespace Controllers
 {
@@ -14,33 +15,34 @@ namespace Controllers
         {
         }
 
-        public AccountController(UserManager userManager, SignInManager signInManager)
+        public AccountController(UserManager<User, int> userManager, SignInManager<User, int> signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
         }
 
-        private UserManager _userManager;
-        public UserManager UserManager
+        private UserManager<User, int> _userManager;
+        public UserManager<User, int> UserManager
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager>();
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>();
             }
             private set
             {
                 _userManager = value;
+                
             }
         }
 
 
-        private SignInManager _signInManager;
+        private SignInManager<User, int> _signInManager;
 
-        public SignInManager SignInManager
+        public SignInManager<User, int> SignInManager
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInManager>();
+                return _signInManager ?? HttpContext.GetOwinContext().Get<SignInManager<User, int>>();
             }
             private set { _signInManager = value; }
         }

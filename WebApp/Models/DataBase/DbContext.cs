@@ -124,7 +124,12 @@ namespace Models
         {
             SqlParameter[] parameters = new SqlParameter[] 
             {
-                new SqlParameter("id", SqlDbType.Int) { SqlValue = userId, Direction = ParameterDirection.Input }
+                new SqlParameter("@id",SqlDbType.Int) {SqlValue = userId, Direction = ParameterDirection.Input},
+                new SqlParameter("@userName",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output}
             };           
             return ParamToUser(StoredProcedure("dbo.UserFindById", parameters));
         }
@@ -132,7 +137,12 @@ namespace Models
         {
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@UserName",SqlDbType.NVarChar,50) { SqlValue = userName, Direction = ParameterDirection.Input }
+                new SqlParameter("@id",SqlDbType.Int) { Direction = ParameterDirection.Output},
+                new SqlParameter("@userName",SqlDbType.NVarChar,50) {SqlValue = userName, Direction = ParameterDirection.Input},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEnabled",SqlDbType.Bit) { Direction = ParameterDirection.Output},
+                new SqlParameter("@accessFailedCount",SqlDbType.Int) { Direction = ParameterDirection.Output},
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) { Direction = ParameterDirection.Output}
             };
             return ParamToUser(StoredProcedure("dbo.UserFindByName", parameters));  
         }
@@ -145,12 +155,12 @@ namespace Models
         {
             return new SqlParameter[]
             {
-                new SqlParameter("id",SqlDbType.Int) {SqlValue = user.Id, Direction = ParameterDirection.Input},
-                new SqlParameter("userName",SqlDbType.NVarChar,50) {SqlValue = user.UserName, Direction = ParameterDirection.Input},
-                new SqlParameter("passwordHash",SqlDbType.NVarChar,50) {SqlValue = user.PasswordHash, Direction = ParameterDirection.Input},
-                new SqlParameter("lockoutEnabled",SqlDbType.Bit) {SqlValue = user.LockoutEnabled, Direction = ParameterDirection.Input},
-                new SqlParameter("accessFailedCount",SqlDbType.Int) {SqlValue = user.AccessFailedCount, Direction = ParameterDirection.Input},
-                new SqlParameter("lockoutEndDateUtc",SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input}
+                new SqlParameter("@id",SqlDbType.Int) {SqlValue = user.Id, Direction = ParameterDirection.Input},
+                new SqlParameter("@userName",SqlDbType.NVarChar,50) {SqlValue = user.UserName, Direction = ParameterDirection.Input},
+                new SqlParameter("@passwordHash",SqlDbType.NVarChar,50) {SqlValue = user.PasswordHash, Direction = ParameterDirection.Input},
+                new SqlParameter("@lockoutEnabled",SqlDbType.Bit) {SqlValue = user.LockoutEnabled, Direction = ParameterDirection.Input},
+                new SqlParameter("@accessFailedCount",SqlDbType.Int) {SqlValue = user.AccessFailedCount, Direction = ParameterDirection.Input},
+                new SqlParameter("@lockoutEndDateUtc",SqlDbType.DateTime) {SqlValue = user.LockoutEndDateUtc, Direction = ParameterDirection.Input}
             };
         } 
         private User ParamToUser(SqlParameter[] parameters)
