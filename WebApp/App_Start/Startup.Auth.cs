@@ -16,7 +16,7 @@ namespace WebApp
             app.CreatePerOwinContext((IdentityFactoryOptions<UserManager<User, int>> options, IOwinContext context) =>
                  new UserManager<User, int>(new UserStore(context.Get<DbContext>()))
                  {
-                     UserTokenProvider = new DataProtectorTokenProvider<User, int>(new DpapiDataProtectionProvider().Create("Test")),
+                     UserTokenProvider = new DataProtectorTokenProvider<User, int>(new DpapiDataProtectionProvider("WebApp").Create("Confirmation")),
                      EmailService = new EmailService()
                  });
             app.CreatePerOwinContext((IdentityFactoryOptions<RoleManager<Role, int>> options, IOwinContext context) => new RoleManager<Role, int>(new RoleStore(context.Get<DbContext>())));

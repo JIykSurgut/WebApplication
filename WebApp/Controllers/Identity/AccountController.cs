@@ -99,17 +99,30 @@ namespace Controllers
         {
             int userId = 6;
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
-            var callbackUrl = Url.Action(
-               "ConfirmEmail", "Account",
-               new { userId = userId, code = code },
-               protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userId, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userId, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+            return View("Login");
+        }
 
-            await UserManager.SendEmailAsync(userId,
-               "Confirm your account",
-               "Please confirm your account by clicking this link: <a href=\""
-                                               + callbackUrl + "\">link</a>");
+        // GET: /Account/Register
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
             return View();
         }
+
+        // GET: /Account/ConfirmEmail
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmEmail(int userId, string code)
+        {
+            if (userId == 0 || code == null)
+            {
+                return View("Error");
+            }
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
 
         #region Helpers
         private IAuthenticationManager AuthenticationManager
