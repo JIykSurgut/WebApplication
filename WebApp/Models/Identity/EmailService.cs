@@ -24,8 +24,9 @@ namespace Models
             msg.From = new MailAddress("sbis86@mail.ru");
             msg.To.Add(new MailAddress(message.Destination));
             msg.Subject = message.Subject;
-            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
-            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+            msg.Body = message.Body;
+            //msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
+            //msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
 
             SmtpClient smtpClient = new SmtpClient("smtp.mail.ru", Convert.ToInt32(25));
             System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("sbis86@mail.ru", "honda190189");

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Models;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
-using System.Net.Mail;
+using System.Security.Claims;
 
 namespace Controllers
 {
@@ -45,6 +45,8 @@ namespace Controllers
             }
         }
 
+        public static string ptCode;
+        public static string ptStamp;
         #region /Account/Login
         [HttpGet]
         [AllowAnonymous]
@@ -91,15 +93,23 @@ namespace Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    user = await UserManager.FindByEmailAsync(model.Email);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Отправка сообщения электронной почты с этой ссылкой
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    //ptStamp = await UserManager.GetSecurityStampAsync(user.Id);
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    ptCode = code;
+                    code = HttpUtility.UrlEncode(code);
+                    
+
+                    //var resultq = await UserManager.ConfirmEmailAsync(user.Id, code);
+                    await ConfirmEmail(user.Id, code);
+
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+
+                    return View("Register"); //RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
@@ -134,9 +144,29 @@ namespace Controllers
             await UserManager.SendEmailAsync(userId,
                "Confirm your account",
                "Please confirm your account by clicking this link: <a href=\""
-                                               + callbackUrl + "\">link</a>");
+                                               + HttpUtility.UrlEncode(callbackUrl) + "\">link</a>");
             return View();
         }
+
+        // GET: /Account/ConfirmEmail
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ConfirmEmail(int userId, string code)
+        {
+            
+            if (userId == 0|| code == null)
+            {
+                return View("Error");
+            }
+            //var cl = await UserManager.GetSecurityStampAsync(userId);
+
+            code = HttpUtility.UrlDecode(code);
+            //var resultq = await UserManager.ConfirmEmailAsync(userId, code);
+
+            var result = await UserManager.ConfirmEmailAsync(userId, ptCode);
+            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+        }
+
 
         #region Helpers
         private IAuthenticationManager AuthenticationManager
@@ -163,6 +193,19 @@ namespace Controllers
             }
         }
         #endregion
+        [AllowAnonymous]
+        public ActionResult Claim()
+        {
+            ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
 
+            if (ident == null)
+            {
+                return View("Error", new string[] { "Нет доступных требований" });
+            }
+            else
+            {
+                return View(ident.Claims);
+            }
+        }
     }
 }

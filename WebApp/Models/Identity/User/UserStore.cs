@@ -12,7 +12,9 @@ namespace Models
         IUserPasswordStore<User, int>,
         IUserLockoutStore<User, int>,
         IUserTwoFactorStore<User, int>,
-        IUserEmailStore<User, int>
+        IUserEmailStore<User, int>,
+        IUserSecurityStampStore<User, int>//,
+        //IUserClaimStore<User, int>
     {
         public DbContext dbContext
         {
@@ -37,6 +39,7 @@ namespace Models
         #region IUserStore
         public Task CreateAsync(User user)
         {
+            user.LockoutEndDateUtc = DateTime.Now;
             dbContext.UserCreate(user);
             return Task.FromResult<object>(null);
         }
@@ -102,7 +105,7 @@ namespace Models
         }
         #endregion
 
-        #region
+        #region IUserEmailStore
         public Task<User> FindByEmailAsync(string email) => Task.FromResult(dbContext.FindByEmail(email));
         public Task<string> GetEmailAsync(User user) => Task.FromResult(user.Email);
         public Task<bool> GetEmailConfirmedAsync(User user) => Task.FromResult(user.EmailConfirmed);
@@ -116,6 +119,32 @@ namespace Models
             user.EmailConfirmed = confirmed;
             return Task.FromResult(0);
         }
+        #endregion
+
+        #region IUserSecurityStampStore
+        public Task<string> GetSecurityStampAsync(User user) => Task.FromResult(user.SecurityStamp);      
+        public Task SetSecurityStampAsync(User user, string stamp)
+        {
+            user.SecurityStamp = stamp;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserClaimStore
+        //public Task AddClaimAsync(User user, Claim claim)
+        //{
+        //    return Task.FromResult(0);
+        //}
+
+        //public Task<IList<Claim>> GetClaimsAsync(User user)
+        //{
+
+        //}
+
+        //public Task RemoveClaimAsync(User user, Claim claim)
+        //{
+        //    return Task.FromResult(0);
+        //}
         #endregion
     }
 }

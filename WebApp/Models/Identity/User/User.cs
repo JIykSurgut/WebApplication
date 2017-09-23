@@ -16,10 +16,26 @@ namespace Models
         public bool TwoFactorEnabled { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
+        public string SecurityStamp { get; set; }
 
+        public User()
+        {
+            Id = 0;
+            UserName = "";
+            PasswordHash = "";
+            LockoutEnabled = false;
+            AccessFailedCount = 0;
+            LockoutEndDateUtc = new DateTime(2000, 1, 1);
+            TwoFactorEnabled = false;
+            Email = "";
+            EmailConfirmed = false;
+            SecurityStamp = "";
+        }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
         {
-            return await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            ClaimsIdentity claimsIdentity =  await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            claimsIdentity.AddClaim(new Claim("mail", this.Email));
+            return claimsIdentity;
         }
     }
 }
