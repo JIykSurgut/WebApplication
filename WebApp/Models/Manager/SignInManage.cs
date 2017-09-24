@@ -6,19 +6,28 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    //public class SignInManager : SignInManager<User, int>
-    //{
-    //    public SignInManager(UserManager userManager, IAuthenticationManager authenticationManager)
-    //        : base(userManager, authenticationManager) { }
+    public class SignInManager : SignInManager<User, int>
+    {
+        public SignInManager(UserManager userManager, IAuthenticationManager authenticationManager)
+            : base(userManager, authenticationManager)
+        {
+            #region base .ctor
+            //if (userManager == null)
+            //{
+            //    throw new ArgumentNullException("userManager");
+            //}
+            //if (authenticationManager == null)
+            //{
+            //    throw new ArgumentNullException("authenticationManager");
+            //}
+            //this.UserManager = userManager;
+            //this.AuthenticationManager = authenticationManager;
+            #endregion
+        }
 
-    //    public override Task<ClaimsIdentity> CreateUserIdentityAsync(User user)
-    //    {
-    //        return user.GenerateUserIdentityAsync((UserManager)UserManager); //??
-    //    }
-
-    //    public static SignInManager Create(IdentityFactoryOptions<SignInManager> options, IOwinContext context)
-    //    {
-    //        return new SignInManager(context.GetUserManager<UserManager>(), context.Authentication);
-    //    }
-    //}
+        public override Task<ClaimsIdentity> CreateUserIdentityAsync(User user)
+        {
+            return user.GenerateUserIdentityAsync(UserManager);
+        }
+    }
 }

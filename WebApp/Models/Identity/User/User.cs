@@ -31,10 +31,10 @@ namespace Models
             EmailConfirmed = false;
             SecurityStamp = "";
         }
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> userManager)
         {
-            ClaimsIdentity claimsIdentity =  await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            claimsIdentity.AddClaim(new Claim("mail", this.Email));
+            ClaimsIdentity claimsIdentity =  await userManager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            claimsIdentity.AddClaim(new Claim("mail", Email));
             return claimsIdentity;
         }
     }

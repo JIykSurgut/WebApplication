@@ -15,29 +15,29 @@ namespace Controllers
         public AccountController()
         {
         }
-        public AccountController(UserManager<User, int> userManager, SignInManager<User, int> signInManager)
+        public AccountController(UserManager userManager, SignInManager signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
-        private UserManager<User, int> userManager;
-        private SignInManager<User, int> signInManager;
-        public UserManager<User, int> UserManager
+        private UserManager userManager;
+        private SignInManager signInManager;
+        public UserManager UserManager
         {
             get
             {
-                return userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager<User, int>>();
+                return userManager ?? HttpContext.GetOwinContext().GetUserManager<UserManager>();
             }
             private set
             {
                 userManager = value;                
             }
         }
-        public SignInManager<User, int> SignInManager
+        public SignInManager SignInManager
         {
             get
             {
-                return signInManager ?? HttpContext.GetOwinContext().Get<SignInManager<User, int>>();
+                return signInManager ?? HttpContext.GetOwinContext().Get<SignInManager>();
             }
             private set
             {
@@ -45,8 +45,6 @@ namespace Controllers
             }
         }
 
-        public static string ptCode;
-        public static string ptStamp;
         #region /Account/Login
         [HttpGet]
         [AllowAnonymous]
@@ -96,18 +94,10 @@ namespace Controllers
                     user = await UserManager.FindByEmailAsync(model.Email);
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-
-                    //ptStamp = await UserManager.GetSecurityStampAsync(user.Id);
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    ptCode = code;
-                    code = HttpUtility.UrlEncode(code);
-                    
-
-                    //var resultq = await UserManager.ConfirmEmailAsync(user.Id, code);
-                    await ConfirmEmail(user.Id, code);
 
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+                    await UserManager.SendEmailAsync(user.Id, "Подтверждение учетной записи", "<html>Подтвердите вашу учетную запись, щелкнув <a href=\"" + callbackUrl + "\">здесь</a></html>");
 
                     return View("Register"); //RedirectToAction("Index", "Home");
                 }
@@ -129,28 +119,8 @@ namespace Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET:
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult> Test()
-        {
-            int userId = 6;
-            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
-            var callbackUrl = Url.Action(
-               "ConfirmEmail", "Account",
-               new { userId = userId, code = code },
-               protocol: Request.Url.Scheme);
-
-            await UserManager.SendEmailAsync(userId,
-               "Confirm your account",
-               "Please confirm your account by clicking this link: <a href=\""
-                                               + HttpUtility.UrlEncode(callbackUrl) + "\">link</a>");
-            return View();
-        }
-
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmEmail(int userId, string code)
         {
             
@@ -158,15 +128,120 @@ namespace Controllers
             {
                 return View("Error");
             }
-            //var cl = await UserManager.GetSecurityStampAsync(userId);
-
-            code = HttpUtility.UrlDecode(code);
-            //var resultq = await UserManager.ConfirmEmailAsync(userId, code);
-
-            var result = await UserManager.ConfirmEmailAsync(userId, ptCode);
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        //Password
+        #region Password 
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await UserManager.FindByNameAsync(model.Email);
+                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                {
+                    // Не показывать, что пользователь не существует или не подтвержден
+                    return View("ForgotPasswordConfirmation");
+                }
+
+               
+                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                 await UserManager.SendEmailAsync(user.Id, "Сброс пароля", "Сбросьте ваш пароль, щелкнув <a href=\"" + callbackUrl + "\">здесь</a>");
+                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
+            }
+
+            // Появление этого сообщения означает наличие ошибки; повторное отображение формы
+            return View(model);
+        }
+        
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+        #endregion
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string code)
+        {
+            return code == null ? View("Error") : View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user == null)
+            {
+                // Не показывать, что пользователь не существует
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            AddErrors(result);
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        //[AllowAnonymous]
+        //public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
+        //{
+        //    var userId = await SignInManager.GetVerifiedUserIdAsync();
+        //    if (userId == null)
+        //    {
+        //        return View("Error");
+        //    }
+        //    var userFactors = await UserManager.GetValidTwoFactorProvidersAsync(userId);
+        //    var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
+        //    return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+        //}
+
+        //[HttpPost]
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> SendCode(SendCodeViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View();
+        //    }
+
+        //    // Создание и отправка маркера
+        //    if (!await SignInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+        //    {
+        //        return View("Error");
+        //    }
+        //    return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+        //}
 
         #region Helpers
         private IAuthenticationManager AuthenticationManager

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
@@ -39,21 +40,20 @@ namespace Models
         #region IUserStore
         public Task CreateAsync(User user)
         {
-            user.LockoutEndDateUtc = DateTime.Now;
             dbContext.UserCreate(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         public Task DeleteAsync(User user)
         {
             dbContext.UserDelete(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         public Task<User> FindByIdAsync(int userId) => Task.FromResult(dbContext.UserFindById(userId));
         public Task<User> FindByNameAsync(string userName) => Task.FromResult(dbContext.UserFindByName(userName));
         public Task UpdateAsync(User user)
         {
             dbContext.UserUpdate(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         #endregion
 
@@ -63,7 +63,7 @@ namespace Models
         public Task SetPasswordHashAsync(User user, string passwordHash)
         {
             user.PasswordHash = passwordHash;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         #endregion
 
@@ -79,7 +79,7 @@ namespace Models
         public Task ResetAccessFailedCountAsync(User user)
         {
             user.AccessFailedCount = 0;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         public Task SetLockoutEnabledAsync(User user, bool enabled)
         {
@@ -94,14 +94,11 @@ namespace Models
         #endregion
 
         #region IUserTwoFactorStore
-        public Task<bool> GetTwoFactorEnabledAsync(User user)
-        {
-            return Task.FromResult(user.TwoFactorEnabled);
-        }
+        public Task<bool> GetTwoFactorEnabledAsync(User user) => Task.FromResult(user.TwoFactorEnabled);
         public Task SetTwoFactorEnabledAsync(User user, bool enabled)
         {
             user.TwoFactorEnabled = enabled;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         #endregion
 

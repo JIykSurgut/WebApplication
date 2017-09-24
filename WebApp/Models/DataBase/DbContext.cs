@@ -112,24 +112,14 @@ namespace Models
         #endregion
 
         #region IUserStore
-        public void UserCreate(User user)
-        {
-            StoredProcedure("dbo.UserCreate", UserToParam(user));
-        }
-        public void UserDelete(User user)
-        {
-            StoredProcedure("dbo.UserDeleteById", UserToParam(user));
-        }
+        public void UserCreate(User user) => StoredProcedure("dbo.UserCreate", UserToParam(user));
+        public void UserDelete(User user) => StoredProcedure("dbo.UserDeleteById", UserToParam(user));
         public User UserFindById(int userId) => ParamToUser(StoredProcedure("dbo.UserFindById", UserToParam(new User() { Id = userId })));        
         public User UserFindByName(string userName) => ParamToUser(StoredProcedure("dbo.UserFindByName", UserToParam(new User() { UserName = userName })));         
-        public void UserUpdate(User user)
-        {
-            StoredProcedure("dbo.UserUpdate", UserToParam(user));
-        }
+        public void UserUpdate(User user) => StoredProcedure("dbo.UserUpdate", UserToParam(user));
+        #endregion
         #region Вспомогательные методы
-        private SqlParameter[] UserToParam(User user)
-        {
-            return new SqlParameter[]
+        private SqlParameter[] UserToParam(User user) => new SqlParameter[]
             {
                 new SqlParameter("@id",SqlDbType.Int) {SqlValue = user.Id, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@userName",SqlDbType.NVarChar,50) {SqlValue = user.UserName, Direction = ParameterDirection.InputOutput},
@@ -141,11 +131,8 @@ namespace Models
                 new SqlParameter("@email",SqlDbType.NVarChar,50) {SqlValue = user.Email, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@emailConfirmed",SqlDbType.Bit) {SqlValue = user.EmailConfirmed, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@securityStamp",SqlDbType.NVarChar,256) {SqlValue = user.SecurityStamp, Direction = ParameterDirection.InputOutput}
-            };
-        } 
-        private User ParamToUser(SqlParameter[] parameters)
-        {
-            return new User()
+            }; 
+        private User ParamToUser(SqlParameter[] parameters) => new User()
             {
                 Id = Convert.ToInt32(parameters[0].Value),
                 UserName = Convert.ToString(parameters[1].Value),
@@ -158,10 +145,8 @@ namespace Models
                 EmailConfirmed = Convert.ToBoolean(parameters[8].Value),
                 SecurityStamp = Convert.ToString(parameters[9].Value)
             };
-        }
         #endregion
-        #endregion
-
+        
         #region IRoleStore
         public void RoleCreate(Role role)
         {
