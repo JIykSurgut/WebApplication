@@ -17,6 +17,8 @@ namespace Models
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string SecurityStamp { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
 
         public User()
         {
@@ -30,6 +32,8 @@ namespace Models
             Email = "";
             EmailConfirmed = false;
             SecurityStamp = "";
+            PhoneNumber = "";
+            PhoneNumberConfirmed = false;
         }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> userManager)
         {

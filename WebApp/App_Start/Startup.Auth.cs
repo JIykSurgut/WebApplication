@@ -4,6 +4,8 @@ using Microsoft.Owin.Security.Cookies;
 using Owin;
 using Models;
 using Microsoft.AspNet.Identity.Owin;
+using System;
+using Microsoft.Owin.Security.Google;
 
 namespace WebApp
 {
@@ -26,6 +28,29 @@ namespace WebApp
             });
             
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+
+            
+            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+            app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+
+
+            //app.UseMicrosoftAccountAuthentication(
+            //    clientId: "",
+            //    clientSecret: "");
+
+            //app.UseTwitterAuthentication(
+            //   consumerKey: "",
+            //   consumerSecret: "");
+
+            //app.UseFacebookAuthentication(
+            //   appId: "",
+            //   appSecret: "");
+
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "828340761489-7q66eelh2vof4sapa2lelv16a49ga831.apps.googleusercontent.com",
+                ClientSecret = "yl4p-Y44Kmo-Z0Rvu-5mDgrs"
+            });
 
         }
     }

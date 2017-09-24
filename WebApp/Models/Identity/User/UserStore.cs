@@ -14,7 +14,9 @@ namespace Models
         IUserLockoutStore<User, int>,
         IUserTwoFactorStore<User, int>,
         IUserEmailStore<User, int>,
-        IUserSecurityStampStore<User, int>//,
+        IUserSecurityStampStore<User, int>,
+        IUserPhoneNumberStore<User, int>,
+        IUserLoginStore<User, int>
         //IUserClaimStore<User, int>
     {
         public DbContext dbContext
@@ -142,6 +144,40 @@ namespace Models
         //{
         //    return Task.FromResult(0);
         //}
+        #endregion
+
+        #region IUserPhoneNumberStore
+        public Task<string> GetPhoneNumberAsync(User user) => Task.FromResult(user.PhoneNumber);
+        public Task<bool> GetPhoneNumberConfirmedAsync(User user) => Task.FromResult(user.PhoneNumberConfirmed);
+        public Task SetPhoneNumberAsync(User user, string phoneNumber)
+        {
+            user.PhoneNumber = phoneNumber;
+            return Task.FromResult(0);
+        }
+        public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed)
+        {
+            user.PhoneNumberConfirmed = confirmed;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserLoginStore    
+        public Task AddLoginAsync(User user, UserLoginInfo login)
+        {
+            return Task.FromResult(0);
+        }
+        public Task<User> FindAsync(UserLoginInfo login)
+        {
+            return Task.FromResult<User>(null);
+        }
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        {
+            return Task.FromResult<IList<UserLoginInfo>>(null);
+        }
+        public Task RemoveLoginAsync(User user, UserLoginInfo login)
+        {
+            return Task.FromResult(0);
+        }
         #endregion
     }
 }

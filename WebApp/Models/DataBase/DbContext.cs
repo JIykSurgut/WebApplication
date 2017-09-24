@@ -130,7 +130,9 @@ namespace Models
                 new SqlParameter("@twoFactorEnabled",SqlDbType.Bit) {SqlValue = user.TwoFactorEnabled, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@email",SqlDbType.NVarChar,50) {SqlValue = user.Email, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@emailConfirmed",SqlDbType.Bit) {SqlValue = user.EmailConfirmed, Direction = ParameterDirection.InputOutput},
-                new SqlParameter("@securityStamp",SqlDbType.NVarChar,256) {SqlValue = user.SecurityStamp, Direction = ParameterDirection.InputOutput}
+                new SqlParameter("@securityStamp",SqlDbType.NVarChar,256) {SqlValue = user.SecurityStamp, Direction = ParameterDirection.InputOutput},
+                new SqlParameter("@phoneNumber",SqlDbType.NVarChar,256) {SqlValue = user.PhoneNumber, Direction = ParameterDirection.InputOutput},
+                new SqlParameter("@phoneNumberConfirmed",SqlDbType.Bit) {SqlValue = user.PhoneNumberConfirmed, Direction = ParameterDirection.InputOutput},
             }; 
         private User ParamToUser(SqlParameter[] parameters) => new User()
             {
@@ -143,7 +145,9 @@ namespace Models
                 TwoFactorEnabled = Convert.ToBoolean(parameters[6].Value),
                 Email =  Convert.ToString(parameters[7].Value),
                 EmailConfirmed = Convert.ToBoolean(parameters[8].Value),
-                SecurityStamp = Convert.ToString(parameters[9].Value)
+                SecurityStamp = Convert.ToString(parameters[9].Value),
+                PhoneNumber = Convert.ToString(parameters[10].Value),
+                PhoneNumberConfirmed = Convert.ToBoolean(parameters[11].Value)
             };
         #endregion
         

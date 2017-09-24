@@ -6,6 +6,7 @@ using Models;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers
 {
@@ -210,6 +211,15 @@ namespace Controllers
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            // Запрос перенаправления к внешнему поставщику входа
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
         //[AllowAnonymous]

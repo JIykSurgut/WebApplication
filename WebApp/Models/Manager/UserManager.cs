@@ -27,7 +27,8 @@ namespace Models
 
             //UserTokenProvider = new DataProtectorTokenProvider<User, int>(new DpapiDataProtectionProvider().Create("Confirmation"));
             EmailService = new EmailService();
-
+            SmsService = new SmsService();
+            
             //Значения по умолчанию
             //1.Указывает включать блокировку при создании пользователей
             UserLockoutEnabledByDefault = false;
