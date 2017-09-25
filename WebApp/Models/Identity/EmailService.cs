@@ -25,7 +25,7 @@ namespace Models
             {
                 Credentials = new NetworkCredential(
                     userName: "sbis86@mail.ru",
-                    password: "*******" //bbb555
+                    password: "*******" //bbb555666
                     ),
                 EnableSsl = true
             }.Send(msg);
