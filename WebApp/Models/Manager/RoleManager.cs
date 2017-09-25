@@ -8,28 +8,24 @@ using System.Web;
 
 namespace Models
 {
-    //public class RoleManager : RoleManager<Role, int>
-    //{
-    //    public RoleManager(RoleStore appRoleStore)
-    //        : base(appRoleStore)
-    //    {
-    //        this.appRoleStore = appRoleStore;
-    //    }
+    public class RoleManager : RoleManager<Role, int>
+    {
+        public RoleManager(RoleStore roleStore)
+            : base(roleStore)
+        {
+            #region base .ctor
+            //if (store == null)
+            //{
+            //    throw new ArgumentNullException("store");
+            //}
+            //this.Store = store;
+            //this.RoleValidator = new RoleValidator<TRole, TKey>(this);
+            #endregion
+        }
 
-    //    public RoleStore appRoleStore
-    //    {
-    //        get;
-    //        protected set;
-    //    }
-
-    //    public Task<List<Role>> GetRolesAsync()
-    //    {
-    //        return RoleStore.RolesGetAll();
-    //    }
-
-    //    public static RoleManager Create(IdentityFactoryOptions<RoleManager> options, IOwinContext context)
-    //    {
-    //        return new RoleManager(new RoleStore(context.Get<DbContext>()));
-    //    }
-    //}
+        //public Task<List<Role>> GetRolesAsync()
+        //{            
+        //    return RoleStore.RolesGetAll();
+        //}
+    }
 }

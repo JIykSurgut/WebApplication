@@ -16,10 +16,30 @@ namespace Models
         public bool TwoFactorEnabled { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
+        public string SecurityStamp { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
 
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> manager)
+        public User()
         {
-            return await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            Id = 0;
+            UserName = "";
+            PasswordHash = "";
+            LockoutEnabled = false;
+            AccessFailedCount = 0;
+            LockoutEndDateUtc = new DateTime(2000, 1, 1);
+            TwoFactorEnabled = false;
+            Email = "";
+            EmailConfirmed = false;
+            SecurityStamp = "";
+            PhoneNumber = "";
+            PhoneNumberConfirmed = false;
+        }
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User, int> userManager)
+        {
+            ClaimsIdentity claimsIdentity =  await userManager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            claimsIdentity.AddClaim(new Claim("mail", Email));
+            return claimsIdentity;
         }
     }
 }
