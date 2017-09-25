@@ -24,8 +24,7 @@ namespace Models
             new SmtpClient(host: "smtp.mail.ru", port: 25)
             {
                 Credentials = new NetworkCredential(
-                    userName: "sbis86@mail.ru",
-                    password: "honda190189"
+                   
                     ),
                 EnableSsl = true
             }.Send(msg);
