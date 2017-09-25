@@ -2,23 +2,30 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 
 namespace Models
 {
-    public class AppUserStore :
-        IUserStore<AppUser, int>,
-        IUserPasswordStore<AppUser, int>,
-        IUserLockoutStore<AppUser, int>
+    public class UserStore :
+        IUserStore<User, int>,
+        IUserPasswordStore<User, int>,
+        IUserLockoutStore<User, int>,
+        IUserTwoFactorStore<User, int>,
+        IUserEmailStore<User, int>,
+        IUserSecurityStampStore<User, int>,
+        IUserPhoneNumberStore<User, int>,
+        IUserLoginStore<User, int>
+        //IUserClaimStore<User, int>
     {
-        public AppDbContext dbContext
+        public DbContext dbContext
         {
             get;
             private set;
         }
 
-        public AppUserStore(AppDbContext dbContext)
+        public UserStore(DbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -32,103 +39,144 @@ namespace Models
             }
         }
 
-        #region IUserStore :IDisposable
-        //
-        //Task CreateAsync(TUser user)                 добавить нового пользователя
-        //Task DeleteAsync(TUser user)                 удалить пользователя
-        //Task<TUser> FindByIdAsync(TKey userId)       найти пользователя по ID
-        //Task<TUser> FindByNameAsync(string userName) найти пользователя по имени
-        //Task UpdateAsync(TUser user)                 обновить данные пользователя
-        public Task CreateAsync(AppUser user)
+        #region IUserStore
+        public Task CreateAsync(User user)
         {
-            IRoleStore <>
-            throw new NotImplementedException();
+            dbContext.UserCreate(user);
+            return Task.FromResult(0);
         }
-        public Task DeleteAsync(AppUser user)
+        public Task DeleteAsync(User user)
         {
-            throw new NotImplementedException();
+            dbContext.UserDelete(user);
+            return Task.FromResult(0);
         }
-        public Task<AppUser> FindByIdAsync(int userId)
+        public Task<User> FindByIdAsync(int userId) => Task.FromResult(dbContext.UserFindById(userId));
+        public Task<User> FindByNameAsync(string userName) => Task.FromResult(dbContext.UserFindByName(userName));
+        public Task UpdateAsync(User user)
         {
-            return Task.FromResult<AppUser>(dbContext.UserFindById(userId));
-        }
-        public Task<AppUser> FindByNameAsync(string userName)
-        {
-            return Task.FromResult<AppUser>(dbContext.UserFindByName(userName));
-        }
-        
-        public Task UpdateAsync(AppUser user)
-        {
-            throw new NotImplementedException();
+            dbContext.UserUpdate(user);
+            return Task.FromResult(0);
         }
         #endregion
 
-        #region IUserPasswordStore :IUserStore, IDisposable
-        //
-        //Task<string> GetPasswordHashAsync(TUser user)              получить хеш-пароль пользователя
-        //Task<bool> HasPasswordAsync(TUser user)                    есть ли пароль у пользователя
-        //Task SetPasswordHashAsync(TUser user, string passwordHash) записать хеш-пароль пользователю
-        public Task<string> GetPasswordHashAsync(AppUser user)
-        {
-            return Task.FromResult<string>(user.PasswordHash);
-        }
-        public Task<bool> HasPasswordAsync(AppUser user)
-        {
-            bool result = false;
-            if (user.PasswordHash != null) result = true;
-
-            return Task.FromResult<bool>(result);
-        }
-        public Task SetPasswordHashAsync(AppUser user, string passwordHash)
+        #region IUserPasswordStore
+        public Task<string> GetPasswordHashAsync(User user) => Task.FromResult(user.PasswordHash);
+        public Task<bool> HasPasswordAsync(User user) => Task.FromResult(user.PasswordHash != null ? true : false);
+        public Task SetPasswordHashAsync(User user, string passwordHash)
         {
             user.PasswordHash = passwordHash;
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
         #endregion
 
-        #region IUserLockoutStore :IUserStore, IDisposable
-        //
-        //Task<int> GetAccessFailedCountAsync(TUser user)                   возвращает кол-во неудачных попыток входа
-        //Task<bool> GetLockoutEnabledAsync(TUser user)                     может пользователь быть заблокирован?
-        //Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)           получить дату окончания блокировки
-        //Task<int> IncrementAccessFailedCountAsync(TUser user)             инкремент неудачных попыток входа
-        //Task ResetAccessFailedCountAsync(TUser user)                      сброс неудачных попыток входа
-        //Task SetLockoutEnabledAsync(TUser user, bool enabled)             устанавливает блокировку пользователя
-        //Task SetLockoutEndDateAsync(TUser user,DateTimeOffset lockoutEnd) задает дату окончания блокировки
-        public Task<int> GetAccessFailedCountAsync(AppUser user)
-        {
-            return Task.FromResult(user.AccessFailedCount);
-        }
-        public Task<bool> GetLockoutEnabledAsync(AppUser user)
-        {
-            return Task.FromResult(user.LockoutEnabled);
-        }
-        public Task<DateTimeOffset> GetLockoutEndDateAsync(AppUser user)
+        #region IUserLockoutStore
+        public Task<int> GetAccessFailedCountAsync(User user) => Task.FromResult(user.AccessFailedCount);        
+        public Task<bool> GetLockoutEnabledAsync(User user) => Task.FromResult(user.LockoutEnabled);     
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)
         {
             DateTimeOffset dateTimeOffset = DateTime.SpecifyKind(user.LockoutEndDateUtc, DateTimeKind.Utc);
             return Task.FromResult(dateTimeOffset);
         }
-        public Task<int> IncrementAccessFailedCountAsync(AppUser user)
-        {
-            return Task.FromResult(++user.AccessFailedCount);
-        }
-        public Task ResetAccessFailedCountAsync(AppUser user)
+        public Task<int> IncrementAccessFailedCountAsync(User user) => Task.FromResult(++user.AccessFailedCount);
+        public Task ResetAccessFailedCountAsync(User user)
         {
             user.AccessFailedCount = 0;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
-        public Task SetLockoutEnabledAsync(AppUser user, bool enabled)
+        public Task SetLockoutEnabledAsync(User user, bool enabled)
         {
             user.LockoutEnabled = enabled;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
         }
-        public Task SetLockoutEndDateAsync(AppUser user, DateTimeOffset lockoutEnd)
+        public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
         {
             user.LockoutEndDateUtc = lockoutEnd.UtcDateTime;
-            dbContext.UserUpdateById(user);
-            return Task.FromResult<object>(null);
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserTwoFactorStore
+        public Task<bool> GetTwoFactorEnabledAsync(User user) => Task.FromResult(user.TwoFactorEnabled);
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled)
+        {
+            user.TwoFactorEnabled = enabled;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserEmailStore
+        public Task<User> FindByEmailAsync(string email) => Task.FromResult(dbContext.FindByEmail(email));
+        public Task<string> GetEmailAsync(User user) => Task.FromResult(user.Email);
+        public Task<bool> GetEmailConfirmedAsync(User user) => Task.FromResult(user.EmailConfirmed);
+        public Task SetEmailAsync(User user, string email)
+        {
+            user.Email = email;
+            return Task.FromResult(0);
+        }
+        public Task SetEmailConfirmedAsync(User user, bool confirmed)
+        {
+            user.EmailConfirmed = confirmed;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserSecurityStampStore
+        public Task<string> GetSecurityStampAsync(User user) => Task.FromResult(user.SecurityStamp);      
+        public Task SetSecurityStampAsync(User user, string stamp)
+        {
+            user.SecurityStamp = stamp;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserClaimStore
+        //public Task AddClaimAsync(User user, Claim claim)
+        //{
+        //    return Task.FromResult(0);
+        //}
+
+        //public Task<IList<Claim>> GetClaimsAsync(User user)
+        //{
+
+        //}
+
+        //public Task RemoveClaimAsync(User user, Claim claim)
+        //{
+        //    return Task.FromResult(0);
+        //}
+        #endregion
+
+        #region IUserPhoneNumberStore
+        public Task<string> GetPhoneNumberAsync(User user) => Task.FromResult(user.PhoneNumber);
+        public Task<bool> GetPhoneNumberConfirmedAsync(User user) => Task.FromResult(user.PhoneNumberConfirmed);
+        public Task SetPhoneNumberAsync(User user, string phoneNumber)
+        {
+            user.PhoneNumber = phoneNumber;
+            return Task.FromResult(0);
+        }
+        public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed)
+        {
+            user.PhoneNumberConfirmed = confirmed;
+            return Task.FromResult(0);
+        }
+        #endregion
+
+        #region IUserLoginStore    
+        public Task AddLoginAsync(User user, UserLoginInfo login)
+        {
+            return Task.FromResult(0);
+        }
+        public Task<User> FindAsync(UserLoginInfo login)
+        {
+            return Task.FromResult<User>(null);
+        }
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        {
+            return Task.FromResult<IList<UserLoginInfo>>(null);
+        }
+        public Task RemoveLoginAsync(User user, UserLoginInfo login)
+        {
+            return Task.FromResult(0);
         }
         #endregion
     }
