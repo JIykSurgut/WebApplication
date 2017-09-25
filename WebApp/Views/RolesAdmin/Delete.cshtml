@@ -1,0 +1,30 @@
+﻿@model ZDL.Models.AppRole
+
+@{
+    ViewBag.Title = "Удалить роль";
+}
+
+<div>
+    <h3>Удалить роль</h3>
+    <h5>Вы действительно хотите удалить роль?</h5>
+    <hr />
+    @Html.ValidationSummary(true)
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayName("Наименование")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Вернуться", "Index")
+        </div>
+    }
+</div>
