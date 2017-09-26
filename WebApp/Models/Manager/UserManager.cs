@@ -28,7 +28,16 @@ namespace Models
             //UserTokenProvider = new DataProtectorTokenProvider<User, int>(new DpapiDataProtectionProvider().Create("Confirmation"));
             EmailService = new EmailService();
             SmsService = new SmsService();
-            
+            RegisterTwoFactorProvider("PhoneCode", new PhoneNumberTokenProvider<User, int>
+            {
+                MessageFormat = "Your security code is: {0}"
+            });
+            RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<User, int>
+            {
+                Subject = "SecurityCode",
+                BodyFormat = "Your security code is {0}"
+            });
+
             //Значения по умолчанию
             //1.Указывает включать блокировку при создании пользователей
             UserLockoutEnabledByDefault = false;
@@ -49,6 +58,7 @@ namespace Models
             };
             //6.Проверка пользователя перед сохранением
             //UserValidator
+            
 
         }
 

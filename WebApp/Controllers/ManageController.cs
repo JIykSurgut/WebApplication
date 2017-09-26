@@ -66,7 +66,7 @@ namespace WebApplication4.Controllers
             int userId = Convert.ToInt32(User.Identity.GetUserId());
             var model = new IndexViewModel
             {
-                HasPassword = HasPassword(),
+                HasPassword = await HasPasswordAsync(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
                 Logins = null,//await UserManager.GetLoginsAsync(userId),
@@ -353,13 +353,13 @@ namespace WebApplication4.Controllers
             }
         }
 
-        private bool HasPassword()
+        private async Task<bool> HasPasswordAsync()
         {
-            var user = UserManager.FindByIdAsync(Convert.ToInt32(User.Identity.GetUserId()));
-            //if (user != null)
-            //{
-            //    return user.PasswordHas != null;
-            //}
+            User user = await UserManager.FindByIdAsync(Convert.ToInt32(User.Identity.GetUserId()));          
+            if (user != null)
+            {
+                return user.PasswordHash != null;
+            }
             return false;
         }
 

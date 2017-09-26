@@ -48,9 +48,11 @@ namespace Controllers
         #region /Account/Login
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public async Task<ActionResult> Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            var us = (await UserManager.GetValidTwoFactorProvidersAsync(6)).Count;
+
             return View();
         }
 
@@ -92,6 +94,8 @@ namespace Controllers
                 if (result.Succeeded)
                 {
                     user = await UserManager.FindByEmailAsync(model.Email);
+                
+
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
