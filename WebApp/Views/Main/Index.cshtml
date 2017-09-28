@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <script src="~/Content/Bootstrap/js/jquery-3.2.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    @Styles.Render("~/bundles/bootstrap-css")
+    @Scripts.Render("~/bundles/bootstrap-js")
+<style>
+    div {
+        position: absolute;
+        right: 0px;
+        background: #ccc;
+        width: 200px;
+        height: 500px;
+    }
+    .right {
+        position: absolute;
+        right: 0px;
+        width: 300px;
+        border: 3px solid #73AD21;
+        padding: 10px;
+    }
+</style>
+</head>
+    <body>
+        <div style="background: #F5F5F5; border-left: 1px solid #ccc" id="slide">qweqwe</div>
+
+<script>
+    $(document).on('keypress', function (e) {
+        
+        if (e.which === 119) $("#slide").toggle("slide", { direction: "right" }); //w
+    });  
+</script>
+    </body>
+</html>
+

@@ -149,6 +149,7 @@
     <Content Include="Content\Bootstrap\css\bootstrap-theme.min-3.3.7.css" />
     <Content Include="Content\Bootstrap\css\bootstrap.min-3.3.7.css" />
     <Content Include="Content\Bootstrap\js\bootstrap.min-3.3.7.js" />
+    <Content Include="Content\Bootstrap\js\jquery-3.2.1.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -160,6 +161,7 @@
     <Compile Include="Controllers\Identity\AccountController.cs" />
     <Compile Include="Controllers\Identity\RolesAdminController.cs" />
     <Compile Include="Controllers\Identity\UsersAdminController.cs" />
+    <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -208,6 +210,7 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Main\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
