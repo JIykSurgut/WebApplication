@@ -6,35 +6,127 @@
 <head>
     <title>@ViewBag.Title</title>
     <script src="~/Content/Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    @Styles.Render("~/bundles/bootstrap-css")
-    @Scripts.Render("~/bundles/bootstrap-js")
+    @*<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    <link href="~/Content/Bootstrap/css/bootstrap.min-3.3.7.css" rel="stylesheet" />
+    <script src="~/Content/Bootstrap/js/bootstrap.min-3.3.7.js"></script>
+    <link href="~/Content/Bootstrap/css/default/style.min.css" rel="stylesheet" />
+    <script src="~/Content/Bootstrap/js/jstree.min.js"></script>
 <style>
-    div {
+    #jstree {
+        width: inherit;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: -3px 0px 10px 0px rgba(0,0,0,0.34);
+        -webkit-box-shadow: -3px 0px 10px 0px rgba(0,0,0,0.34);
+        -moz-box-shadow: -3px 0px 10px 0px rgba(0,0,0,0.34);
+    }
+
+    /*div {
         position: absolute;
         right: 0px;
         background: #ccc;
         width: 200px;
         height: 500px;
-    }
-    .right {
+       
+    }*/
+    /*.right {
         position: absolute;
         right: 0px;
         width: 300px;
         border: 3px solid #73AD21;
         padding: 10px;
-    }
+    }*/
 </style>
 </head>
     <body>
-        <div style="background: #F5F5F5; border-left: 1px solid #ccc" id="slide">qweqwe</div>
-
-<script>
-    $(document).on('keypress', function (e) {
         
-        if (e.which === 119) $("#slide").toggle("slide", { direction: "right" }); //w
-    });  
+        
+            
+        <div style="background: #F8F8F8 ; z-index:5; 
+            border-left: 1px solid #ccc; 
+            width: 200px; 
+            position: absolute; 
+            right: 0px" 
+             id="jstree">
+        @*<div id="jstree">*@
+        <ul>
+            <li>Root node 1</li>
+          
+            <li>Root node 2</li>
+        </ul>
+        </div>
+        <div id="Content"></div>
+
+        
+
+            @*@Html.Raw("<div> тест</div> <input type='text'>");*@
+<script>
+   
+    $('#jstree').jstree({
+        "plugins": [
+            "themes", "json_data"
+        ],
+        "core": {
+            "data": {
+                "url": "/main/getjstree", // получаем наш JSON
+                "type": "GET",
+                "dataType": "json"
+
+            },
+
+        },
+    });
+
+    $('#jstree').on("changed.jstree", function (event, data) {//для того чтобы редиректело
+
+        console.log(data.selected[0]);
+        api.GetArticle(data.selected[0]).done(function(data1)
+        {
+            console.log(data1);
+            document.getElementById("Content").innerHTML = data1['html'];
+            //$('#Content').innerHTML=data1;
+            
+        });
+        
+        
+    });
+
+$(document).on('keypress', function (e) {
+    if (e.which === 119) $("#jstree").toggle();//"slide", { direction: "right" },200);
+    });
+    
+
+    
+
+function API()
+{
+    var api = {};
+    api.ajax = function (url, type, data) {
+        return $.ajax({
+            url: url,
+            type: type,
+            data: data,
+            dataType: 'json'
+        });
+    }
+
+    api.GetArticle = function (id) {
+        var url = "/main/GetArticle"
+        var data = {id: id};
+        return this.ajax(url,"GET", data);
+    }
+
+    return api;
+}
+
+    var api = new API();
+
+    //api.GetArticle().done(function(data){
+    //    console.log(data);
+    //});
+
 </script>
-    </body>
+</body>
 </html>
 

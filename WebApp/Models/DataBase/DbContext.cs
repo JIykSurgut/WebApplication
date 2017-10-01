@@ -107,7 +107,15 @@ namespace Models
             command.Parameters.AddRange(parameters);
             ConnectionOpen();
             command.ExecuteNonQuery();
+            
             return parameters;
+        }
+        public SqlDataReader StoredProcedure(string commandText)
+        {
+            SqlCommand command = new SqlCommand(commandText, connectionString);
+            command.CommandType = CommandType.StoredProcedure;
+            ConnectionOpen();
+            return command.ExecuteReader();
         }
         #endregion
 
@@ -186,6 +194,23 @@ namespace Models
 
         #region IUserEmailStore
         public User FindByEmail(string email) => ParamToUser(StoredProcedure("dbo.UserFindByEmail", UserToParam(new User() { Email = email })));
+        #endregion
+
+        #region JStree
+        public SqlDataReader GetJStree()
+        {
+            return StoredProcedure("dbo.GetNodeJStree");
+            
+        }
+
+        public SqlParameter[] GetArticle(int id)
+        {
+            return  StoredProcedure("dbo.GetArticle", new[]
+            {
+                new SqlParameter("@id",SqlDbType.Int) {SqlValue = id, Direction = ParameterDirection.Input },
+                new SqlParameter("@html", SqlDbType.NVarChar,int.MaxValue) {Direction =ParameterDirection.Output }
+            });
+        }
         #endregion
     }
 }

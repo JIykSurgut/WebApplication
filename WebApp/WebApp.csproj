@@ -148,8 +148,14 @@
     </Content>
     <Content Include="Content\Bootstrap\css\bootstrap-theme.min-3.3.7.css" />
     <Content Include="Content\Bootstrap\css\bootstrap.min-3.3.7.css" />
+    <Content Include="Content\Bootstrap\css\default\32px.png" />
+    <Content Include="Content\Bootstrap\css\default\40px.png" />
+    <Content Include="Content\Bootstrap\css\default\style.css" />
+    <Content Include="Content\Bootstrap\css\default\style.min.css" />
+    <Content Include="Content\Bootstrap\css\default\throbber.gif" />
     <Content Include="Content\Bootstrap\js\bootstrap.min-3.3.7.js" />
     <Content Include="Content\Bootstrap\js\jquery-3.2.1.min.js" />
+    <Content Include="Content\Bootstrap\js\jstree.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
