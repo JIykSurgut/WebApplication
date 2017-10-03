@@ -203,6 +203,11 @@ namespace Models
             
         }
 
+        public SqlDataReader GetTreeSolush()
+        {
+            return StoredProcedure("dbo.GetTreeSolush");
+        }
+
         public SqlParameter[] GetArticle(int id)
         {
             return  StoredProcedure("dbo.GetArticle", new[]

@@ -156,6 +156,7 @@
     <Content Include="Content\Bootstrap\js\bootstrap.min-3.3.7.js" />
     <Content Include="Content\Bootstrap\js\jquery-3.2.1.min.js" />
     <Content Include="Content\Bootstrap\js\jstree.min.js" />
+    <Content Include="Content\Folder.png" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -217,6 +218,7 @@
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Main\Index.cshtml" />
+    <Content Include="Views\Main\CodeView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

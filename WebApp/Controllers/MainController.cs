@@ -33,6 +33,8 @@ namespace WebApp.Controllers
             
         }
 
+        
+
         [HttpGet]
         public ActionResult GetArticle(int id)
         {
@@ -41,6 +43,30 @@ namespace WebApp.Controllers
                 new { html = param[1].Value.ToString() },
                 JsonRequestBehavior.AllowGet);
         }
+
+
+
+        [HttpGet]
+        public ActionResult CodeView()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public ActionResult GetTreeSolush()
+        {
+            var reader = dbContext.GetTreeSolush();
+            List<object> tt = new List<object>();
+            while (reader.Read())
+            {
+                tt.Add(
+                new { id = reader.GetInt32(2).ToString(), parent = reader.GetInt32(3).ToString() == "0" ? "#" : reader.GetInt32(3).ToString(), text = "Text", icon = "/Content/Folder.png" });
+            }
+            return Json(tt, JsonRequestBehavior.AllowGet);
+
+        }
+
 
     }
 }
