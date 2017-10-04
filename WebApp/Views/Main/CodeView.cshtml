@@ -82,7 +82,8 @@
 <pre class="csharpcode">
         [AllowAnonymous]
         <span class="kwrd">public</span> ActionResult Claim()
-        {
+        {        
+    
             ClaimsIdentity ident = HttpContext.User.Identity <span class="kwrd">as</span> ClaimsIdentity;
 
             <span class="kwrd">if</span> (ident == <span class="kwrd">null</span>)
@@ -96,16 +97,10 @@
         }</pre>
 </div>
             </td><td>
-        <td style="width: 20%"><div style=" z-index:5; 
-            border-left: 1px solid #ccc; 
-            width: 200px; 
-            position: absolute; 
-            right: 0px" 
+        <td style="width: 20%" valign="top" >
+            <div  
              id="jstree">
-        <ul>
-            <li>Root node 1</li>         
-            <li>Root node 2</li>
-        </ul>
+        
         </div>
         </td>
     </tr>

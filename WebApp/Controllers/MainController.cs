@@ -61,7 +61,9 @@ namespace WebApp.Controllers
             while (reader.Read())
             {
                 tt.Add(
-                new { id = reader.GetInt32(2).ToString(), parent = reader.GetInt32(3).ToString() == "0" ? "#" : reader.GetInt32(3).ToString(), text = "Text", icon = "/Content/Folder.png" });
+                new { id = reader.GetInt32(2).ToString(), parent = reader.GetInt32(3).ToString() == "0" ? "#" : reader.GetInt32(3).ToString(), text = "Text",
+                    icon = "/Content/"+reader.GetString(4).ToString()
+                });
             }
             return Json(tt, JsonRequestBehavior.AllowGet);
 
