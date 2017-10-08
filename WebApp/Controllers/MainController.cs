@@ -20,31 +20,43 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetJStree()
+        public ActionResult GetMenu()
         {
-            var reader = dbContext.GetJStree();
-            List<object> tt=  new List<object>();
+            var reader = dbContext.GetMenu();
+            List<object> itemList = new List<object>();
             while (reader.Read())
             {
-                tt.Add(
-                new { id = reader.GetInt32(0).ToString(), parent = reader.GetInt32(1).ToString() == "0" ? "#" : reader.GetInt32(1).ToString(), text = reader.GetString(2) });
+                itemList.Add(
+                new { id = reader.GetInt32(0).ToString(),
+                      parent = reader.GetInt32(1).ToString() == "0" ? "#" : reader.GetInt32(1).ToString(),
+                      text = reader.GetString(2)
+                    });
             }
-            return Json(tt,JsonRequestBehavior.AllowGet);
-            
+            return Json(itemList, JsonRequestBehavior.AllowGet);           
         }
 
         
-
         [HttpGet]
-        public ActionResult GetArticle(int id)
+        public ActionResult GetContent(int id)
         {
-            SqlParameter[] param = dbContext.GetArticle(id);
+            SqlParameter[] param = dbContext.GetContent(id);
             return Json(
-                new { html = param[1].Value.ToString() },
+                new { content = param[1].Value.ToString(),
+                      codeId = param[2].Value.ToString()},
                 JsonRequestBehavior.AllowGet);
         }
 
-
+        [HttpGet]
+        public ActionResult GetContentCode(int id)
+        {
+            SqlParameter[] param = dbContext.GetContentCode(id);
+            return Json(
+                new
+                {
+                    contentCode = param[1].Value.ToString()
+                },
+                JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
         public ActionResult CodeView()
@@ -54,18 +66,20 @@ namespace WebApp.Controllers
 
 
         [HttpGet]
-        public ActionResult GetTreeSolush()
+        public ActionResult GetMenuCode(int codeId)
         {
-            var reader = dbContext.GetTreeSolush();
-            List<object> tt = new List<object>();
+            var reader = dbContext.GetMenuCode(codeId);
+            List<object> itemList = new List<object>();
             while (reader.Read())
             {
-                tt.Add(
-                new { id = reader.GetInt32(2).ToString(), parent = reader.GetInt32(3).ToString() == "0" ? "#" : reader.GetInt32(3).ToString(), text = "Text",
-                    icon = "/Content/"+reader.GetString(4).ToString()
+                itemList.Add(
+                new { id = reader.GetInt32(0).ToString(),
+                      parent = reader.GetInt32(1).ToString() == "0" ? "#" : reader.GetInt32(1).ToString(),
+                      text = reader.GetString(2).ToString(),
+                      icon = "/Content/"+reader.GetString(3).ToString()
                 });
             }
-            return Json(tt, JsonRequestBehavior.AllowGet);
+            return Json(itemList, JsonRequestBehavior.AllowGet);
 
         }
 

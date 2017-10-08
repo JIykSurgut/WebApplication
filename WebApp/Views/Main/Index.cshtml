@@ -12,14 +12,18 @@
     <link href="~/Content/Bootstrap/css/default/style.min.css" rel="stylesheet" />
     <script src="~/Content/Bootstrap/js/jstree.min.js"></script>
 <style>
-    #jstree {
-        width: inherit;
+    #Code {
+        display: none;
         height: 100%;
+        width: 100%;
         margin: 0;
         padding: 0;
-        box-shadow: -3px 0px 0px 0px rgba(0,0,0,0.34);
-        -webkit-box-shadow: -3px 0px 10px 0px rgba(0,0,0,0.34);
-        -moz-box-shadow: -3px 0px 10px 0px rgba(0,0,0,0.34);
+        top: 0px;
+        position: absolute;
+    }
+
+    body, html {
+        height: 100%;
     }
 
     #staticpanel {
@@ -48,96 +52,91 @@
     }*/
 
 
+    /* DivTable.com */
+    .divTable {
+        display: table;
+        width: 100%;
+        height: 100%;
+    }
+
+    .divTableRow {
+        display: table-row;
+        height: 100%;
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+    }
+
+    .divTableCell, .divTableHead {
+        border: 1px solid #999999;
+        display: table-cell;
+        /*padding: 3px 10px;*/      
+    }
+
+    .divTableHeading {
+        background-color: #EEE;
+        display: table-header-group;
+        font-weight: bold;
+    }
+
+    .divTableFoot {
+        background-color: #EEE;
+        display: table-footer-group;
+        font-weight: bold;
+    }
+
+    .divTableBody {
+        display: table-row-group;
+    }
+
 </style>
 </head>
     <body>
-        
-        
-            
-        <div style="background: #F8F8F8 ; z-index:5; 
-            border-left: 1px solid #ccc; 
-            width: 200px; 
-            position: absolute; 
-            right: 0px" 
-             id="jstree">
-        @*<div id="jstree">*@
-        <ul>
-            <li>Root node 1</li>
-          
-            <li>Root node 2</li>
-        </ul>
-        </div>
-        <div id="Content" stylr="overflow: scroll"></div>
-
-        
-
-            @*@Html.Raw("<div> тест</div> <input type='text'>");*@
-<div id="staticpanel">
-<table style="width: 100%">
-    <tr><td style="width: 30%"></td>
-    <td style="width: 40%"><input type="text" td style="width: 100%"></td>
-    <td style="width: 30%"></td></tr>
-    </table>
-</div>
-
-//
-        <!-- Trigger the modal with a button -->
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-        <!-- Modal -->
-        <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Modal Header</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Some text in the modal.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
+        <div class="divTable">
+            <div class="divTableBody">
+                <div class="divTableRow">
+                    <div class="divTableCell"><div id="Content"></div></div>
+                    <div class="divTableCell" style="width:200px; background: #F8F8F8"><div id="jstreeMenu"></div></div>
                 </div>
-
             </div>
         </div>
-//
+        
+        <div id="Code">
+            <div class="divTable">
+                <div class="divTableBody">
+                    <div class="divTableRow">
+                        <div class="divTableCell" style="background: #F8F8F8"><div id="ContentCode"></div></div>
+                        <div class="divTableCell" style="width:200px; background: #F8F8F8"><div id="jstreeMenuCode"></div></div>
+                    </div>
+                </div>
+            </div>
+         </div>
+
 <script>
    
-    $('#jstree').jstree({
-        "plugins": [
-            "themes", "json_data"
-        ],
-        "core": {
-            "data": {
-                "url": "/main/getjstree", // получаем наш JSON
-                "type": "GET",
-                "dataType": "json"
+    //$('#jstreeContent').jstree({
+    //    "plugins": [
+    //        "themes", "json_data"
+    //    ],
+    //    "core": {
+    //        "data": {
+    //            "url": "/Main/GetMenu", // получаем наш JSON
+    //            "type": "GET",
+    //            "dataType": "json"
 
-            },
+    //        },
+    //    },
+    //});
 
-        },
-    });
+    $('#jstreeMenu').jstree();
+    $('#jstreeMenuCode').jstree();
 
-    $('#jstree').on("changed.jstree", function (event, data) {//для того чтобы редиректело
-
-        console.log(data.selected[0]);
-        api.GetArticle(data.selected[0]).done(function(data1)
-        {
-            console.log(data1);
-            document.getElementById("Content").innerHTML = data1['html'];
-            //$('#Content').innerHTML=data1;
-            
-        });
-        
-        
-    });
+  
 
 $(document).on('keypress', function (e) {
-    if (e.which === 119) $("#jstree").toggle();//"slide", { direction: "right" },200);
+    if (e.which === 119) $("#Code").toggle();//"slide", { direction: "right" },200);
     });
     
 
@@ -155,20 +154,63 @@ function API()
         });
     }
 
-    api.GetArticle = function (id) {
-        var url = "/main/GetArticle"
+    api.GetMenu = function () {
+        var url = "/Main/GetMenu";
+        var data = {};
+        return this.ajax(url, "GET", data);
+    }
+
+    api.GetContent = function (id) {
+        var url = "/Main/GetContent"
         var data = {id: id};
         return this.ajax(url,"GET", data);
+    }
+
+    api.GetMenuCode = function (codeId) {
+        var url = '/Main/GetMenuCode';
+        var data = { codeId: codeId };
+        return this.ajax(url, 'GET', data);
+    }
+
+    api.GetContentCode = function (id) {
+        var url = '/Main/GetContentCode';
+        var data = { id: id };
+        return this.ajax(url, 'GET', data);
     }
 
     return api;
 }
 
     var api = new API();
+    
+    api.GetMenu().done(function (data) {
+        $('#jstreeMenu').jstree(true).settings.core.data = data;
+        $('#jstreeMenu').jstree(true).refresh();
+    });
+    
+    $('#jstreeMenu').on("changed.jstree", function (event, dataMenu) {//для того чтобы редиректело
 
-    //api.GetArticle().done(function(data){
-    //    console.log(data);
-    //});
+        if (dataMenu.selected[0] == null) return;
+        api.GetContent(dataMenu.selected[0]).done(function (dataContent) {
+            console.log(dataContent);
+            document.getElementById("Content").innerHTML = dataContent['content'];
+
+            api.GetMenuCode(dataContent['codeId']).done(function (dataMenuCode) {
+                $('#jstreeMenuCode').jstree(true).settings.core.data = dataMenuCode;
+                $('#jstreeMenuCode').jstree(true).refresh();
+            });
+        });
+    });
+
+    $('#jstreeMenuCode').on("changed.jstree", function (event, data) {
+
+        if (data.selected[0] == null) return;
+        api.GetContentCode(data.selected[0]).done(function (dataContentCode) {
+            console.log(dataContentCode);
+            document.getElementById("ContentCode").innerHTML = dataContentCode['contentCode'];
+        });
+
+    });
 
 </script>
 </body>

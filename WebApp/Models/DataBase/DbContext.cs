@@ -12,7 +12,7 @@ namespace Models
         private SqlConnection connectionString;
 
         public DbContext(string connectionStringName)
-        {        
+        {
             connectionString = new SqlConnection(ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString);
         }
         public DbContext()
@@ -28,7 +28,7 @@ namespace Models
                 connectionString = null;
             }
         }
- 
+
         #region DataBase
         private void ConnectionOpen()
         {
@@ -107,7 +107,7 @@ namespace Models
             command.Parameters.AddRange(parameters);
             ConnectionOpen();
             command.ExecuteNonQuery();
-            
+
             return parameters;
         }
         public SqlDataReader StoredProcedure(string commandText)
@@ -117,13 +117,22 @@ namespace Models
             ConnectionOpen();
             return command.ExecuteReader();
         }
+
+        public SqlDataReader StoredProcedure1(string commandText, SqlParameter[] parameters)
+        {
+            SqlCommand command = new SqlCommand(commandText, connectionString);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddRange(parameters);
+            ConnectionOpen();
+            return command.ExecuteReader();
+        }
         #endregion
 
         #region IUserStore
         public void UserCreate(User user) => StoredProcedure("dbo.UserCreate", UserToParam(user));
         public void UserDelete(User user) => StoredProcedure("dbo.UserDeleteById", UserToParam(user));
-        public User UserFindById(int userId) => ParamToUser(StoredProcedure("dbo.UserFindById", UserToParam(new User() { Id = userId })));        
-        public User UserFindByName(string userName) => ParamToUser(StoredProcedure("dbo.UserFindByName", UserToParam(new User() { UserName = userName })));         
+        public User UserFindById(int userId) => ParamToUser(StoredProcedure("dbo.UserFindById", UserToParam(new User() { Id = userId })));
+        public User UserFindByName(string userName) => ParamToUser(StoredProcedure("dbo.UserFindByName", UserToParam(new User() { UserName = userName })));
         public void UserUpdate(User user) => StoredProcedure("dbo.UserUpdate", UserToParam(user));
         #endregion
         #region Вспомогательные методы
@@ -141,24 +150,24 @@ namespace Models
                 new SqlParameter("@securityStamp",SqlDbType.NVarChar,256) {SqlValue = user.SecurityStamp, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@phoneNumber",SqlDbType.NVarChar,256) {SqlValue = user.PhoneNumber, Direction = ParameterDirection.InputOutput},
                 new SqlParameter("@phoneNumberConfirmed",SqlDbType.Bit) {SqlValue = user.PhoneNumberConfirmed, Direction = ParameterDirection.InputOutput},
-            }; 
-        private User ParamToUser(SqlParameter[] parameters) => new User()
-            {
-                Id = Convert.ToInt32(parameters[0].Value),
-                UserName = Convert.ToString(parameters[1].Value),
-                PasswordHash = Convert.ToString(parameters[2].Value),
-                LockoutEnabled = Convert.ToBoolean(parameters[3].Value),
-                AccessFailedCount = Convert.ToInt32(parameters[4].Value),
-                LockoutEndDateUtc = Convert.ToDateTime(parameters[5].Value),
-                TwoFactorEnabled = Convert.ToBoolean(parameters[6].Value),
-                Email =  Convert.ToString(parameters[7].Value),
-                EmailConfirmed = Convert.ToBoolean(parameters[8].Value),
-                SecurityStamp = Convert.ToString(parameters[9].Value),
-                PhoneNumber = Convert.ToString(parameters[10].Value),
-                PhoneNumberConfirmed = Convert.ToBoolean(parameters[11].Value)
             };
+        private User ParamToUser(SqlParameter[] parameters) => new User()
+        {
+            Id = Convert.ToInt32(parameters[0].Value),
+            UserName = Convert.ToString(parameters[1].Value),
+            PasswordHash = Convert.ToString(parameters[2].Value),
+            LockoutEnabled = Convert.ToBoolean(parameters[3].Value),
+            AccessFailedCount = Convert.ToInt32(parameters[4].Value),
+            LockoutEndDateUtc = Convert.ToDateTime(parameters[5].Value),
+            TwoFactorEnabled = Convert.ToBoolean(parameters[6].Value),
+            Email = Convert.ToString(parameters[7].Value),
+            EmailConfirmed = Convert.ToBoolean(parameters[8].Value),
+            SecurityStamp = Convert.ToString(parameters[9].Value),
+            PhoneNumber = Convert.ToString(parameters[10].Value),
+            PhoneNumberConfirmed = Convert.ToBoolean(parameters[11].Value)
+        };
         #endregion
-        
+
         #region IRoleStore
         public void RoleCreate(Role role)
         {
@@ -197,25 +206,26 @@ namespace Models
         #endregion
 
         #region JStree
-        public SqlDataReader GetJStree()
-        {
-            return StoredProcedure("dbo.GetNodeJStree");
-            
-        }
+        public SqlDataReader GetMenu() => StoredProcedure("dbo.GetMenu");
 
-        public SqlDataReader GetTreeSolush()
-        {
-            return StoredProcedure("dbo.GetTreeSolush");
-        }
+        public SqlDataReader GetMenuCode(int codeId) => StoredProcedure1("dbo.GetMenuCode", new[]
+            {
+                new SqlParameter("@codeId", SqlDbType.Int) { SqlValue = codeId, Direction = ParameterDirection.Input }
+            });
+        
 
-        public SqlParameter[] GetArticle(int id)
-        {
-            return  StoredProcedure("dbo.GetArticle", new[]
+        public SqlParameter[] GetContent(int id) => StoredProcedure("dbo.GetContent", new[]
             {
                 new SqlParameter("@id",SqlDbType.Int) {SqlValue = id, Direction = ParameterDirection.Input },
-                new SqlParameter("@html", SqlDbType.NVarChar,int.MaxValue) {Direction =ParameterDirection.Output }
+                new SqlParameter("@content", SqlDbType.NVarChar,int.MaxValue) {Direction =ParameterDirection.Output },
+                new SqlParameter("@codeId", SqlDbType.Int) { Direction = ParameterDirection.Output}
             });
-        }
+
+        public SqlParameter[] GetContentCode(int id) => StoredProcedure("dbo.GetContentCode", new[]
+            {
+                new SqlParameter("@id",SqlDbType.Int) {SqlValue = id, Direction = ParameterDirection.Input },
+                new SqlParameter("@contentCode", SqlDbType.NVarChar,int.MaxValue) {Direction =ParameterDirection.Output },
+            }); 
         #endregion
     }
 }
